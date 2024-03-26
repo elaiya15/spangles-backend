@@ -20,7 +20,9 @@ mongoose
 
 app.use(express.json());
 app.use(cors());
-
+app.get('/', (req, res) => {
+ res.send(" Server Running ");
+});
 app.use("/register", register);
 app.use("/applied", applied);
 app.use("/selected", selected);
