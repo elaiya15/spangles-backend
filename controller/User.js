@@ -58,7 +58,7 @@ exports.signin = async (req, res, next) => {
       .lean();
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
+      return res.status(404).json({ message: 'User not Found.' });
     }
 
     // Compare the provided password with the stored hashed password
@@ -80,6 +80,7 @@ exports.signin = async (req, res, next) => {
     // Remove unwanted fields from the user object
     delete user.Password;
     delete user.Profile;
+    delete user.UserName;
     delete user.__v;
 
     // Send the token, user data, and selected profile fields as a response
