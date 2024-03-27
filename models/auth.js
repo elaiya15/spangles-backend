@@ -15,16 +15,16 @@ exports.authenticateUser = (req, res, next) => {
     next();
   } catch (err) {
     console.error(err);
-    return res.status(400).send({ msg: "Unauthorised" });
+    return res.status(401).send({ msg: "Unauthorised" });
   }
 };
 
 // Authorisation
 exports.authorizeUser = (req, res, next) => {
-  if (req.body.currentuser.role === "admin") 
+  if (req.body.currentuser.role === "hr"||"manager") 
   next();
   else
     return res
-      .status(404)
+      .status(403)
       .send({ msg: "Forbidden : No permission to access API" });
 };

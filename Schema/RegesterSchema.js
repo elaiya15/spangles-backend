@@ -6,6 +6,7 @@ const Schema = mongoose.Schema;
 // Define ProfileSchema
 const profileSchema = new Schema({ 
  Name: { type: String,trim: true },
+ ProfileImage:{ type: String,trim: true },
   EmployeeCode: {type:String,  trim:true},
   Designation: {type:String, trim:true},
   JoiningDate: {type:Date, trim:true},

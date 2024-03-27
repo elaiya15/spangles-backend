@@ -10,7 +10,7 @@ exports.signup = async (req, res, next) => {
   try {
     const existingUser = await User.findOne({ UserName });
     if (existingUser) {
-      return res.status(400).json({ error: 'UserName is already registered.' });
+      return res.status(400).json({ message: 'UserName is already registered.' });
     }
 
     // Create a new profile
@@ -39,41 +39,54 @@ exports.signup = async (req, res, next) => {
       for (const field in error.errors) {
         validationErrors[field] = error.errors[field].message;
       }
-      return res.status(400).json({ errors: validationErrors });
+      return res.status(400).json({ message: validationErrors });
     } else {
       // Handle other types of errors
       console.error(error);
-      return res.status(500).json({ error: 'Internal Server Error' });
+      return res.status(500).json({ message: 'Internal Server Error' });
     }
   }
 };
 
 
-
-
-
 exports.signin = async (req, res, next) => {
   const { UserName, Password } = req.body;
-  // console.log(req.body);
   try {
     // Find the user by username
-    const user = await User.findOne({ UserName }).select('+Password');
+    const user = await User.findOne({ UserName })
+      .select('+Password')
+      .lean();
+
     if (!user) {
-      return res.status(404).json({ error: 'User not found.' });
+      return res.status(404).json({ message: 'User not found.' });
     }
 
     // Compare the provided password with the stored hashed password
     const isPasswordMatch = await bcrypt.compare(Password, user.Password);
     if (!isPasswordMatch) {
-      return res.status(401).json({ error: 'Invalid password.' });
+      return res.status(401).json({ message: 'Invalid Password.' });
     }
+
+    // Find the profile based on the ObjectId stored in the user's Profile field
+    const profile = await Profiles.findById(user.Profile).select('_id Name ProfileImage').lean();
+
+    // Merge profile data into the user object
+    user.Name = profile.Name;
+    user.ProfileImage = profile.ProfileImage;
 
     // Generate a JWT token
     const token = jwt.sign({ userId: user._id, role: user.EmployeeType }, process.env.SECRET_KEY, { expiresIn: '1d' });
-    // Send the token as a response
-    res.status(200).json({ token ,user});
+
+    // Remove unwanted fields from the user object
+    delete user.Password;
+    delete user.Profile;
+    delete user.__v;
+
+    // Send the token, user data, and selected profile fields as a response
+    res.status(200).json({ message: 'Login Successful.', token, user });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error.' });
+    res.status(500).json({ message: 'Server error.' });
   }
 };
+

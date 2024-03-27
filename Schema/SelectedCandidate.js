@@ -12,8 +12,8 @@ const SelectedCandidateSchema = new Schema({
   Description: { type: String, trim: true },
   status: {
     type: String,
-    enum: ['Approve', 'Approved'],
-    default: 'Approve',
+    enum: ['Approve', 'Approved',"SendMail"],
+    default: 'SendMail',
   },
 });
 

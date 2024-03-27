@@ -1,5 +1,5 @@
 
-// const {User,Profiles} = require('../Schema/RegesterSchema'); // Import your User model
+const {User,Profiles} = require('../Schema/RegesterSchema'); // Import your User model
 
 
 
