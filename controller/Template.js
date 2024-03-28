@@ -66,7 +66,7 @@ exports.getAll = async (req, res, next) => {
         return res.status(404).json({ message:  'Template not found' });
       }
   
-      return res.status(200).json( { message:  'Template updated SuccessFull',updatedTemplate});
+      return res.status(200).json( { message:  'Template updated SuccessFull'});
     } catch (err) {
       console.error(err);
       return res.status(500).json({ message:  'Server error' });
