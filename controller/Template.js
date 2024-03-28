@@ -5,7 +5,6 @@ exports.Create = async (req, res, next) => {
    
     try {
       const { TemplateName, EffectiveDate, Description } = req.body;
-
       const newTemplates = new Templates({ TemplateName, EffectiveDate, Description});
       const savedUser = await newTemplates.save();
       return res.status(201).json({message:'Template Created successfully',Created:savedUser});
@@ -67,7 +66,7 @@ exports.getAll = async (req, res, next) => {
         return res.status(404).json({ message:  'Template not found' });
       }
   
-      return res.status(200).json(updatedTemplate);
+      return res.status(200).json( { message:  'Template updated SuccessFull',updatedTemplate});
     } catch (err) {
       console.error(err);
       return res.status(500).json({ message:  'Server error' });
