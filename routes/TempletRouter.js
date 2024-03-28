@@ -12,7 +12,7 @@ router.get("/all", Template.getAll);
 router.get("/getSingle/:id", Template.get);
 
 // Updated  Templeta 
-router.put("update/:id", Template.Update);
+router.put("/update/:id", Template.Update);
 
 
 // Updated  Templeta 
