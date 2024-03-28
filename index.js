@@ -5,6 +5,8 @@ const cors = require("cors");
 const register = require("./routes/registerRoutes");
 const applied = require("./routes/AppliedRoutes");
 const selected = require("./routes/SelectedRouter");
+const Templeta = require("./routes/TempletRouter");
+const AddJob = require("./routes/Addjob");
 // const get = require("./routes/getRoutes");
 const auth = require("./models/auth");
 require("dotenv").config();
@@ -24,6 +26,8 @@ app.get('/', (req, res) => {
  res.send(" Server Running ");
 });
 app.use("/register", register);
+app.use("/Templeta",Templeta );
+app.use("/JobPost",AddJob );
 app.use("/applied", applied);
 app.use("/selected", selected);
 // app.use("/get", get);

@@ -84,10 +84,10 @@ exports.signin = async (req, res, next) => {
     delete user.__v;
 
     // Send the token, user data, and selected profile fields as a response
-    res.status(200).json({ message: 'Login Successful.', token, user });
+    res.status(200).json({ message: 'Login Successful', token, user });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error.' });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 

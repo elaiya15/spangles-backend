@@ -1,0 +1,47 @@
+Here's a list of CRUD (Create, Read, Update, Delete) operations along with their corresponding HTTP status codes commonly used in RESTful APIs:
+
+1. **Create (POST)**:
+   - `POST /resource` - Create a new resource
+     - **Success Status Codes**:
+       - `201 Created`: The resource was successfully created.
+       - `202 Accepted`: The request has been accepted for processing, but the creation may not have been completed yet.
+     - **Error Status Codes**:
+       - `400 Bad Request`: The request is malformed or missing required parameters.
+       - `401 Unauthorized`: Authentication is required to create the resource.
+       - `403 Forbidden`: The client does not have permission to create the resource.
+       - `409 Conflict`: A conflict occurred while creating the resource (e.g., duplicate entry).
+
+2. **Read (GET)**:
+   - `GET /resource` - Get all resources
+   - `GET /resource/:id` - Get a specific resource by ID
+     - **Success Status Codes**:
+       - `200 OK`: The request was successful, and the resource(s) are returned.
+       - `204 No Content`: The request was successful, but there are no resources to return (e.g., empty list).
+     - **Error Status Codes**:
+       - `404 Not Found`: The requested resource or ID does not exist.
+       - `401 Unauthorized`: Authentication is required to access the resource.
+       - `403 Forbidden`: The client does not have permission to access the resource.
+
+3. **Update (PUT or PATCH)**:
+   - `PUT /resource/:id` - Update a specific resource by replacing it entirely
+   - `PATCH /resource/:id` - Update a specific resource partially
+     - **Success Status Codes**:
+       - `200 OK`: The resource was successfully updated.
+       - `202 Accepted`: The request has been accepted for processing, but the update may not have been completed yet.
+     - **Error Status Codes**:
+       - `400 Bad Request`: The request is malformed or missing required parameters.
+       - `401 Unauthorized`: Authentication is required to update the resource.
+       - `403 Forbidden`: The client does not have permission to update the resource.
+       - `404 Not Found`: The requested resource or ID does not exist.
+       - `409 Conflict`: A conflict occurred while updating the resource.
+
+4. **Delete (DELETE)**:
+   - `DELETE /resource/:id` - Delete a specific resource by ID
+     - **Success Status Codes**:
+       - `204 No Content`: The resource was successfully deleted.
+     - **Error Status Codes**:
+       - `401 Unauthorized`: Authentication is required to delete the resource.
+       - `403 Forbidden`: The client does not have permission to delete the resource.
+       - `404 Not Found`: The requested resource or ID does not exist.
+
+These are standard HTTP status codes, and you can use them to convey the outcome of each CRUD operation in your Node.js and Mongoose-based RESTful API. Remember to handle these status codes appropriately in your API's response handlers for better error handling and client communication.

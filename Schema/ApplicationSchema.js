@@ -11,6 +11,7 @@ const applicationListSchema = new Schema({
   SalaryExpectation: { type: String, trim: true },
   AppliedOn: { type:Date, trim: true },
   Description: { type: String, trim: true },
+  Email: { type: String, trim: true },
   status: {
     type: String,
     enum: ['View', 'Shortlist', 'Reject', 'on hold'],
