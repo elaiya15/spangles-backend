@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
  res.send(" Server Running ");
 });
 app.use("/register", register);
-app.use("/Templeta",Templeta );
+app.use("/admin/hiring/template/",Templeta );
 app.use("/JobPost",AddJob );
 app.use("/applied", applied);
 app.use("/selected", selected);
