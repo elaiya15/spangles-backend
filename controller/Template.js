@@ -8,9 +8,9 @@ exports.Create = async (req, res, next) => {
 
       const newTemplates = new Templates({ TemplateName, EffectiveDate, Description});
       const savedUser = await newTemplates.save();
-      return res.status(201).json(savedUser);
+      return res.status(201).json({message:'Template Created successfully',savedUser});
     } catch (err) {
-      return  res.status(400).json({ message:  err.message });
+      return  res.status(400).json({ message: "Template Created Filled"});
     }
   };
 
@@ -22,7 +22,7 @@ exports.get = async (req, res, next) => {
         if (!getTemplates) {
           return res.status(404).json({ message:  'Templates not found' });
         }
-        res.status(200).json(getTemplates);
+        res.status(200).json( {message:'Data Get successfully',getTemplates});
       } catch (err) {
         res.status(500).json({ message:  'Server error' });
       }
@@ -36,7 +36,7 @@ exports.getAll = async (req, res, next) => {
         if (!AllGetTemplates) {
           return res.status(404).json({ message:  'Templates not found' });
         }
-        res.status(200).json(AllGetTemplates);
+        res.status(200).json({message:'Data Get successfull',Data:AllGetTemplates});
       } catch (err) {
         res.status(500).json({ message:  'Server error' });
       }
