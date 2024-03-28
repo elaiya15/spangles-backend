@@ -8,7 +8,7 @@ exports.Create = async (req, res, next) => {
 
       const newTemplates = new Templates({ TemplateName, EffectiveDate, Description});
       const savedUser = await newTemplates.save();
-      return res.status(201).json({message:'Template Created successfully',savedUser});
+      return res.status(201).json({message:'Template Created successfully',Created:savedUser});
     } catch (err) {
       return  res.status(400).json({ message: "Template Created Filled"});
     }
