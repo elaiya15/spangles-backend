@@ -4,20 +4,20 @@ const router = express.Router();
  
 
 
-// Templeta Create
-router.post("/", JobPost.Create);
+// Job Create
+router.post("/add/new", JobPost.Create);
 
-//  Get Single Templeta 
-router.get("/getSingle", JobPost.get);
+//  Get Single job 
+router.get("/getSingle/:id", JobPost.get);
 
-// GetAll Templeta 
-router.get("/", JobPost.getAll);
+// GetAll job 
+router.get("/all", JobPost.getAll);
 
-// Templeta  Updated
-router.put("/:id", JobPost.Update);
+// job  Updated
+router.put("/update/:id", JobPost.Update);
 
-// Templeta Delete
-router.delete("/:id", JobPost.Delete);
+// job Delete
+router.delete("delete/:id", JobPost.Delete);
 
 
 module.exports = router;
