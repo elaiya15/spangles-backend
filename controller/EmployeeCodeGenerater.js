@@ -1,6 +1,7 @@
 const { User, Profiles } = require('../Schema/RegesterSchema');
 
 async function generateEmployeeCode() {
+  
   // Get the current year
   const currentYear = new Date().getFullYear();
   // Generate the pattern-based part of the code

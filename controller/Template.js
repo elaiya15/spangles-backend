@@ -4,7 +4,7 @@ const Templates = require("../Schema/TemplateSchema");
 exports.Create = async (req, res, next) => {
    
     try {
-      const { TemplateName, EffectiveDate, Description } = req.body;
+      const { TemplateName, EffectiveDate, Description, } = req.body;
       const newTemplates = new Templates({ TemplateName, EffectiveDate, Description});
       const savedUser = await newTemplates.save();
       return res.status(201).json({message:'Template Created successfully',});

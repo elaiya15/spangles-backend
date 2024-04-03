@@ -1,8 +1,37 @@
 
-const AddJob = require('../Schema/AddJobSchema'); // Import your AddJob Schema
+const {AddJob,Category} = require('../Schema/AddJobSchema'); // Import your AddJob Schema
+
+// CREATE - Add a new job
+exports.CreateCategory = async (req, res, next) => {
+  try {
+    const newCategory = await Category.create(req.body);
+    await newCategory.save();
+    return  res.status(201).json({message:"Category Added Successful",NewCategory:newCategory});
+  } catch (err) {
+    return  res.status(400).json({message: "Category NOT Added " });
+  }
+};
+
+
+
+// READ - getCategory all 
+exports.getCategory = async (req, res, next) => {
+  try {
+    const allCategory = await Category.find();
+    return res.status(200).json({message:"Job Category Get Successful",Category: allCategory});
+  } catch (err) {
+    return res.status(500).json({message: 'Internal Server Error' });
+  }
+};
+
+
+
+//<------------JOB Add CODE Started Here------------>
+
 
 // CREATE - Add a new job
 exports.Create = async (req, res, next) => {
+  console.log(req.body);
   try {
     const newJob = await AddJob.create(req.body);
     await newJob.save();
@@ -29,7 +58,7 @@ exports.get = async (req, res, next) => {
     if (!job) {
       return res.status(404).json({message: 'Job not found' });
     }
-    res.status(200).json(job);
+    return res.status(200).json(job);
   } catch (err) {
     res.status(500).json({message: 'Internal Server Error' });
   }
@@ -57,7 +86,7 @@ exports.Delete = async (req, res, next) => {
     }
     return  res.status(204).json({message: 'Deleted Successful' } );
   } catch (err) {
-    res.status(500).json({message: 'Internal Server Error' });
+    return res.status(500).json({message: 'Internal Server Error' });
   }
 };
 
