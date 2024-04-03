@@ -46,7 +46,7 @@ exports.getAll = async (req, res, next) => {
   try {
       const Applicant = await ApplicationList.find()
     const jobs = await AddJob.find();
-    return res.status(200).json({message:"Job Get Successful",JobData: jobs,ApplicationList:Applicant});
+    return res.status(200).json({message:"Job Get Successful",JobData: jobs,ApplicantsList:Applicant});
   } catch (err) {
     return res.status(500).json({message: 'Internal Server Error' });
   }

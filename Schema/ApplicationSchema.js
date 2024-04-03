@@ -13,7 +13,7 @@ const applicationListSchema = new Schema({
   Email: { type: String, trim: true },
   status: {
     type: String,
-    enum: ['View', 'Shortlist', 'Reject', 'on hold'],
+    enum: ['View', 'Shortlist', 'Reject', 'On Hold'],
     default: 'View',
   },
 });
