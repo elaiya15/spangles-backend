@@ -1,28 +1,28 @@
 
 const {AddJob,Category} = require('../Schema/AddJobSchema'); // Import your AddJob Schema
+const ApplicationList = require("../Schema/ApplicationSchema");
+// // CREATE - Add a new job
+// exports.CreateCategory = async (req, res, next) => {
+//   try {
+//     const newCategory = await Category.create(req.body);
+//     await newCategory.save();
+//     return  res.status(201).json({message:"Category Added Successful",NewCategory:newCategory});
+//   } catch (err) {
+//     return  res.status(400).json({message: "Category NOT Added " });
+//   }
+// };
 
-// CREATE - Add a new job
-exports.CreateCategory = async (req, res, next) => {
-  try {
-    const newCategory = await Category.create(req.body);
-    await newCategory.save();
-    return  res.status(201).json({message:"Category Added Successful",NewCategory:newCategory});
-  } catch (err) {
-    return  res.status(400).json({message: "Category NOT Added " });
-  }
-};
 
 
-
-// READ - getCategory all 
-exports.getCategory = async (req, res, next) => {
-  try {
-    const allCategory = await Category.find();
-    return res.status(200).json({message:"Job Category Get Successful",Category: allCategory});
-  } catch (err) {
-    return res.status(500).json({message: 'Internal Server Error' });
-  }
-};
+// // READ - getCategory all 
+// exports.getCategory = async (req, res, next) => {
+//   try {
+//     const allCategory = await Category.find();
+//     return res.status(200).json({message:"Job Category Get Successful",Category: allCategory});
+//   } catch (err) {
+//     return res.status(500).json({message: 'Internal Server Error' });
+//   }
+// };
 
 
 
@@ -44,8 +44,9 @@ exports.Create = async (req, res, next) => {
 // READ - Get all jobs
 exports.getAll = async (req, res, next) => {
   try {
+      const Applicant = await ApplicationList.find()
     const jobs = await AddJob.find();
-    return res.status(200).json({message:"Job Get Successful",JobData: jobs});
+    return res.status(200).json({message:"Job Get Successful",JobData: jobs,ApplicationList:Applicant});
   } catch (err) {
     return res.status(500).json({message: 'Internal Server Error' });
   }

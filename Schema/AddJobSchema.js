@@ -10,14 +10,14 @@
 
 
   const AddJobSchema = new Schema({
-    Category:mongoose.SchemaTypes.ObjectId,
+    Category:{ type: String, trim: true }, 
     Designation: { type: String, trim: true }, 
     WorkExperience: { type:String , trim: true }, 
     RecruiterMail : { type: String, trim: true }, 
-    PreferredSkills : [{ type: String}], 
+    PreferredSkills : [ { type: String, trim: true }], 
     JobSummary: { type: String, trim: true }, 
-    ResponsibilitiesAndDuties: { type: String, trim: true }, 
-    RequiredExperienceAndQualifications: { type: String, trim: true }, 
+    ResponsibilitiesAndDuties:  [ { type: String, trim: true }], 
+    RequiredExperienceAndQualifications:  [ { type: String, trim: true }],  
     CreatedOn:{ type: String, trim: true }, 
     Status: {
       type: String,
