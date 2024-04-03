@@ -4,8 +4,8 @@ const Templates = require("../Schema/TemplateSchema");
 exports.Create = async (req, res, next) => {
    
     try {
-      const { TemplateName, EffectiveDate, Description, } = req.body;
-      const newTemplates = new Templates({ TemplateName, EffectiveDate, Description});
+      const { TemplateName, EffectiveDate, Description,Status } = req.body;
+      const newTemplates = new Templates({ TemplateName, EffectiveDate, Description,Status});
       const savedUser = await newTemplates.save();
       return res.status(201).json({message:'Template Created successfully',});
     } catch (err) {
@@ -47,18 +47,18 @@ exports.getAll = async (req, res, next) => {
     
     exports.Update = async (req, res, next) => {
     try {
-      const { TemplateName, Description, EffectiveDate } = req.body;
+      const { TemplateName, Description, EffectiveDate,Status } = req.body;
       const templateId = req.params.id;
   
       // Validate that the required fields are provided in the request body
-      if (!TemplateName || !Description || !EffectiveDate) {
+      if (!TemplateName || !Description || !EffectiveDate ||!Status) {
         return res.status(400).json({ message:  'Please provide TemplateName, Description, and EffectiveDate' });
       }
   
       // Update the template using findByIdAndUpdate
       const updatedTemplate = await Templates.findByIdAndUpdate(
         templateId,
-        { TemplateName, Description, EffectiveDate },
+        { TemplateName, Description, EffectiveDate,Status },
         { new: true } // Return the updated document
       );
   
