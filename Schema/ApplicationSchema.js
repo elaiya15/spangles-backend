@@ -11,7 +11,7 @@ const applicationListSchema = new Schema({
   AppliedOn: { type:Date, trim: true },
   Description: { type: String, trim: true },
   Email: { type: String, trim: true },
-  status: {
+  Status: {
     type: String,
     enum: ['View', 'Shortlist', 'Reject', 'On Hold'],
     default: 'View',

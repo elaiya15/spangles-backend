@@ -16,7 +16,6 @@ exports.GetApplicationList = async (req, res, next) => {
 };
 
 
-
 /// CreateApplicationList
 exports.CreateApplicationList = async (req, res, next) => {
   try {
