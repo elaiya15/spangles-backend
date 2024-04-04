@@ -45,11 +45,11 @@ exports.UpdateApplicationList = async (req, res, next) => {
     );
 
     // Check if the status is being updated to "Shortlist"
-    if (updatedApplicant.status === "Shortlist") {
+    if (updatedApplicant.Status === "Shortlist") {
       // Create a new shortlisted applicant based on the updated data
       const shortlistedApplicantData = { ...updatedApplicant.toObject() };
       delete shortlistedApplicantData._id; // Remove the _id field
-      delete shortlistedApplicantData.status; // Remove the status field
+      delete shortlistedApplicantData.Status; // Remove the status field
       
       const shortlistedApplicant = new ShortlistedApplicant(
         shortlistedApplicantData
