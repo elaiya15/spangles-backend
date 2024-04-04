@@ -11,7 +11,7 @@ exports.GetApplicationList = async (req, res, next) => {
     
     return res.status(201).json(Applicant);
   } catch (err) {
-    return res.status(400).json({ message:message: 'Data Not Found'  });
+    return res.status(400).json({ message: 'Data Not Found'  });
   }
 };
 
