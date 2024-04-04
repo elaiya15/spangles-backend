@@ -11,7 +11,7 @@ exports.GetApplicationList = async (req, res, next) => {
     
     return res.status(201).json(Applicant);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    return res.status(400).json({ message:message: 'Data Not Found'  });
   }
 };
 
@@ -23,7 +23,7 @@ exports.CreateApplicationList = async (req, res, next) => {
     await newApplicant.save();
     return res.status(201).json(newApplicant);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    return res.status(400).json({message: 'Internal Server Error'  });
   }
 };
 
@@ -35,7 +35,7 @@ exports.UpdateApplicationList = async (req, res, next) => {
 
     const  CheckStatus = await ApplicationList.findById(id)
     if (CheckStatus.status === req.body.status) {
-      return res.status(404).json({msg:  `Status ${req.body.status} Already  Updated` });
+      return res.status(404).json({message:  `Status  Already ${req.body.status}` });
     }
 
     const updatedApplicant = await ApplicationList.findByIdAndUpdate(
@@ -62,7 +62,7 @@ exports.UpdateApplicationList = async (req, res, next) => {
     // If status is not "Shortlist", return the updated applicant
     return res.status(200).json({update:updatedApplicant});
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    return res.status(400).json({ message: err.message });
   }
 };
 
