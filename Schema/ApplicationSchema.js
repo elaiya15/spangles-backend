@@ -14,8 +14,8 @@ const applicationListSchema = new Schema({
   Email: { type: String, trim: true },
   Status: {
     type: String,
-    enum: ['View', 'Shortlist', 'Reject', 'On Hold'],
-    default: 'View',
+    enum: ['New', 'Shortlist', 'Reject', 'On Hold'],
+    default: 'New',
   },
 });
 
