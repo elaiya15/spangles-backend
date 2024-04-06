@@ -16,7 +16,7 @@ router.put("/update/:id", Template.Update);
 
 
 // Updated  Templeta 
-router.delete("delete/:id", Template.deleteTemplate);
+router.delete("/delete/:id", Template.deleteTemplate);
 
 
 module.exports = router;

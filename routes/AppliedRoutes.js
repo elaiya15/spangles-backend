@@ -9,7 +9,7 @@ const auth = require("../models/auth");
 router.post("/", apply.CreateApplicationList);
 router.get("/", apply.GetApplicationList);
 // ApplicationList Status update router  & Shortlisted Created
-router.put("/:id", apply.UpdateApplicationList);
+router.put("/status/update/:id", apply.UpdateApplicationList);
 
 // router.get("/get",  User.get);
 // router.get("/get",auth.authorizeUser , User.get);

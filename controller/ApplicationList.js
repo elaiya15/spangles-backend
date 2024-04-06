@@ -33,10 +33,10 @@ exports.UpdateApplicationList = async (req, res, next) => {
   {
     const { id } = req.params;
 
-    const  CheckStatus = await ApplicationList.findById(id)
-    if (CheckStatus.Status === req.body.Status) {
-      return res.status(404).json({message:  `Status  Already ${req.body.Status}` });
-    }
+    // const  CheckStatus = await ApplicationList.findById(id)
+    // if (CheckStatus.Status === req.body.Status) {
+    //   return res.status(404).json({message:  `Status  Already ${req.body.Status}` });
+    // }
 
     const updatedApplicant = await ApplicationList.findByIdAndUpdate(
       id,
@@ -46,13 +46,12 @@ exports.UpdateApplicationList = async (req, res, next) => {
 
     // Check if the status is being updated to "Shortlist"
     if (updatedApplicant.Status === "Shortlist") {
-      // Create a new shortlisted applicant based on the updated data
-      const shortlistedApplicantData = { ...updatedApplicant.toObject() };
-      delete shortlistedApplicantData._id; // Remove the _id field
-      delete shortlistedApplicantData.Status; // Remove the status field
+      // // Create a new shortlisted applicant based on the updated data
+      // const shortlistedApplicantData = { ...updatedApplicant.toObject() };
+      // // Remove the status field
       
       const shortlistedApplicant = new ShortlistedApplicant(
-        shortlistedApplicantData
+        { Applicant_id:id}
       );
 
       // Save the shortlisted applicant to the new collection
