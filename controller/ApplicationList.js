@@ -45,7 +45,7 @@ exports.UpdateApplicationList = async (req, res, next) => {
     );
 
     // Check if the status is being updated to "Shortlist"
-    if (updatedApplicant.Status === "Shortlist") {
+    if (updatedApplicant.Status === "Shortlisted") {
       // // Create a new shortlisted applicant based on the updated data
       // const shortlistedApplicantData = { ...updatedApplicant.toObject() };
       // // Remove the status field
