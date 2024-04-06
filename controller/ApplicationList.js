@@ -56,10 +56,10 @@ exports.UpdateApplicationList = async (req, res, next) => {
 
       // Save the shortlisted applicant to the new collection
       await shortlistedApplicant.save();
-      return res.status(201).json({ updatedApplicant: updatedApplicant ,shortlistedApplicant:shortlistedApplicant});
+      return res.status(201).json({message: 'Applicant Shortlisted.'});
     }
     // If status is not "Shortlist", return the updated applicant
-    return res.status(200).json({update:updatedApplicant});
+    return res.status(201).json({message: 'Applicant Status Updated Successfully.'});
   } catch (err) {
     return res.status(500).json({message: 'Internal Server Error'});
   }
