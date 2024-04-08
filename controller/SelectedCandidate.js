@@ -1,18 +1,96 @@
 const express = require("express");
+const {AddJob,Category} = require("../Schema/AddJobSchema");
+const ApplicationList = require("../Schema/ApplicationSchema");
+const Templates = require("../Schema/TemplateSchema");
 const ShortlistedApplicant = require("../Schema/ShortListed");
 const SelectedCandidateModel = require("../Schema/SelectedCandidate.js"); // Import the SelectedCandidate model
 const { User, Profiles } = require('../Schema/RegesterSchema');
 const generateEmployeeCode = require('../controller/EmployeeCodeGenerater.js');
 
+
+
 // Get All Shortlisted ApplicationList
 exports.GetApplicationList = async (req, res, next) => {
   try {
-    const Applicant = await ShortlistedApplicant.find();
-    return res.status(201).json(Applicant);
+    const shortlistedApplicants = await ShortlistedApplicant.find();
+    const AllGetTemplates = await Templates.find();
+    const applicants = await Promise.all(shortlistedApplicants.map(async (applicant) => {
+      console.log(applicant);
+      const application = await ApplicationList.findById(applicant.Applicant_id);
+      const job = await AddJob.findById(application.Job_id);
+
+      return {
+        ShortlistedList: {  ...applicant.toObject()},
+        // Templates: {  ...AllGetTemplates},
+        ApplicantsList: {  ...application.toObject()},
+        JobData: {
+          ...job.toObject()
+        }
+      };
+    }));
+
+    return res.status(200).json({ Templates:AllGetTemplates,Data:applicants} );
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    return res.status(400).json({ message: " ID does not exist"});
   }
 };
+
+// createInterviewRound
+exports.createInterviewRound = async (req, res) => {
+  try {
+    const { Id } = req.params;
+    const {roundData } = req.body;
+
+    // Find the shortlisted applicant by shortlistedId
+    const shortlistedApplicant = await ShortlistedApplicant.findById(Id);
+    if (!shortlistedApplicant) {
+      return res.status(404).json({ message: 'Shortlisted applicant not found' });
+    }
+
+    // Push the new interview round data to the InterviewRounds array
+    shortlistedApplicant.InterviewRounds.push(roundData);
+    await shortlistedApplicant.save();
+
+    return res.status(201).json({ message: 'Interview round added successfully' });
+  } catch (error) {
+    return res.status(400).json({ message : "Bad Request or missing required parameters"});
+  }
+};
+
+//  updateInterviewRound
+exports.updateInterviewRound = async (req, res) => {
+  try {
+    const { Id } = req.params;
+    const { roundId, updatedRoundData } = req.body;
+
+    // Find the shortlisted applicant by shortlistedId
+    const shortlistedApplicant = await ShortlistedApplicant.findById(Id);
+    if (!shortlistedApplicant) {
+      return res.status(404).json({ message: 'Shortlisted applicant not found' });
+    }
+
+    // Find the interview round by roundId in the InterviewRounds array
+    const interviewRound = shortlistedApplicant.InterviewRounds.id(roundId);
+    if (!interviewRound) {
+      return res.status(404).json({ message: 'Interview round not found' });
+    }
+
+    // Update the interview round data
+    interviewRound.set(updatedRoundData);
+    await shortlistedApplicant.save();
+
+    return res.status(200).json({ message: 'Interview round updated successfully' });
+  } catch (error) {
+    return res.status(400).json({ message: "Interview round updated Failed " });
+  }
+};
+
+
+
+
+
+
+
 
 // Update an applicant by ID
 exports.UpdateShortList = async (req, res, next) => {

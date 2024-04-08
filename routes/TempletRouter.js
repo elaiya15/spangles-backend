@@ -8,6 +8,8 @@ router.post("/add/new", Template.Create);
 // GetAll Templeta 
 router.get("/all", Template.getAll);
 
+router.get("/", Template.getAll);
+
 //  Get Single Templeta 
 router.get("/getSingle/:id", Template.get);
 

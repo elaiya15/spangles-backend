@@ -29,7 +29,7 @@ app.use("/register", register);
 app.use("/admin/hiring/template",Templeta);
 app.use("/admin/hiring/jobPost",AddJob );
 app.use("/admin/hiring/applicant", applied);
-app.use("/selected", selected);
+app.use("/admin/hiring/shortlisted/", selected);
 // app.use("/get", get);
 
 // Connect to MongoDB
