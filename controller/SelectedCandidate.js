@@ -57,33 +57,33 @@ exports.createInterviewRound = async (req, res) => {
   }
 };
 
-//  updateInterviewRound
-exports.updateInterviewRound = async (req, res) => {
-  try {
-    const { Id } = req.params;
-    const { roundId, updatedRoundData } = req.body;
+// //  updateInterviewRound
+// exports.updateInterviewRound = async (req, res) => {
+//   try {
+//     const { Id } = req.params;
+//     const { roundId, updatedRoundData } = req.body;
 
-    // Find the shortlisted applicant by shortlistedId
-    const shortlistedApplicant = await ShortlistedApplicant.findById(Id);
-    if (!shortlistedApplicant) {
-      return res.status(404).json({ message: 'Shortlisted applicant not found' });
-    }
+//     // Find the shortlisted applicant by shortlistedId
+//     const shortlistedApplicant = await ShortlistedApplicant.findById(Id);
+//     if (!shortlistedApplicant) {
+//       return res.status(404).json({ message: 'Shortlisted applicant not found' });
+//     }
 
-    // Find the interview round by roundId in the InterviewRounds array
-    const interviewRound = shortlistedApplicant.InterviewRounds.id(roundId);
-    if (!interviewRound) {
-      return res.status(404).json({ message: 'Interview round not found' });
-    }
+//     // Find the interview round by roundId in the InterviewRounds array
+//     const interviewRound = shortlistedApplicant.InterviewRounds.id(roundId);
+//     if (!interviewRound) {
+//       return res.status(404).json({ message: 'Interview round not found' });
+//     }
 
-    // Update the interview round data
-    interviewRound.set(updatedRoundData);
-    await shortlistedApplicant.save();
+//     // Update the interview round data
+//     interviewRound.set(updatedRoundData);
+//     await shortlistedApplicant.save();
 
-    return res.status(200).json({ message: 'Interview round updated successfully' });
-  } catch (error) {
-    return res.status(400).json({ message: "Interview round updated Failed " });
-  }
-};
+//     return res.status(200).json({ message: 'Interview round updated successfully' });
+//   } catch (error) {
+//     return res.status(400).json({ message: "Interview round update Failed " });
+//   }
+// };
 
 
 
