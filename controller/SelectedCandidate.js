@@ -4,8 +4,8 @@ const ApplicationList = require("../Schema/ApplicationSchema");
 const Templates = require("../Schema/TemplateSchema");
 const ShortlistedApplicant = require("../Schema/ShortListed");
 const SelectedCandidateModel = require("../Schema/SelectedCandidate.js");
-const { User, Profiles } = require('../Schema/RegesterSchema');
-const generateEmployeeCode = require('../controller/EmployeeCodeGenerater.js');
+const { User, Profiles } = require("../Schema/RegesterSchema");
+const generateEmployeeCode = require("../controller/EmployeeCodeGenerater.js");
 
 // Get All Shortlisted ApplicationList
 exports.GetApplicationList = async (req, res, next) => {
@@ -14,8 +14,17 @@ exports.GetApplicationList = async (req, res, next) => {
     const allGetTemplates = await Templates.find();
     const addJobs = await AddJob.find();
     const applicationLists = await ApplicationList.find();
+    const Employees = await Profiles.find();
 
-    return res.status(200).json({ JobData: addJobs, ApplicantsList: applicationLists, Templates: allGetTemplates, ShortlistedList: shortlistedApplicants });
+    return res
+      .status(200)
+      .json({
+        JobData: addJobs,
+        ApplicantsList: applicationLists,
+        Templates: allGetTemplates,
+        ShortlistedList: shortlistedApplicants,
+        Employees:Employees
+      });
   } catch (err) {
     return res.status(400).json({ error: err.message });
   }
@@ -25,21 +34,31 @@ exports.GetApplicationList = async (req, res, next) => {
 exports.createInterviewRound = async (req, res) => {
   try {
     const { Id } = req.params;
-    const {roundData } = req.body;
+    const { Result, InterviewStatus, InterviewData } = req.body;
 
     // Find the shortlisted applicant by shortlistedId
     const shortlistedApplicant = await ShortlistedApplicant.findById(Id);
     if (!shortlistedApplicant) {
-      return res.status(404).json({ message: 'Shortlisted applicant not found' });
+      return res
+        .status(404)
+        .json({ message: "Shortlisted applicant not found" });
     }
+    shortlistedApplicant.Result = "In Progress";
+    shortlistedApplicant.InterviewStatus =
+      "Scheduled to Round " + shortlistedApplicant.InterviewRounds.length + 1;
 
     // Push the new interview round data to the InterviewRounds array
-    shortlistedApplicant.InterviewRounds.push(roundData);
+    shortlistedApplicant.InterviewRounds.push(InterviewData);
     await shortlistedApplicant.save();
 
-    return res.status(201).json({ message: 'Interview round added successfully' });
+
+    return res
+      .status(201)
+      .json({ message: "Interview round added successfully" });
   } catch (error) {
-    return res.status(400).json({ message : "Bad Request or missing required parameters"});
+    return res
+      .status(400)
+      .json({ message: "Bad Request or missing required parameters" });
   }
 };
 
@@ -71,13 +90,6 @@ exports.createInterviewRound = async (req, res) => {
 //   }
 // };
 
-
-
-
-
-
-
-
 // Update an applicant by ID
 exports.UpdateShortList = async (req, res, next) => {
   const data = req.body;
@@ -86,7 +98,9 @@ exports.UpdateShortList = async (req, res, next) => {
     const CheckStatus = await ShortlistedApplicant.findById(id);
 
     if (CheckStatus.status === req.body.status) {
-      return res.status(404).json({ msg: `Status ${req.body.status} Already Updated` });
+      return res
+        .status(404)
+        .json({ msg: `Status ${req.body.status} Already Updated` });
     }
 
     const updatedApplicant = await ShortlistedApplicant.findByIdAndUpdate(
@@ -112,7 +126,7 @@ exports.UpdateShortList = async (req, res, next) => {
       await newSelectedCandidate.save();
       return res.status(201).json({ SelectedCandidate: newSelectedCandidate });
     }
-    
+
     // If status is not "Selected", return the updated applicant
     return res.status(200).json({ update: updatedApplicant });
   } catch (err) {
