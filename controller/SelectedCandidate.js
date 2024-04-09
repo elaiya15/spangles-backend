@@ -15,7 +15,7 @@ exports.GetApplicationList = async (req, res, next) => {
     const addJobs = await AddJob.find();
     const applicationLists = await ApplicationList.find();
 
-    return res.status(200).json({ AddJob: addJobs, ApplicationList: applicationLists, Templates: allGetTemplates, shortlistedApplicants: shortlistedApplicants });
+    return res.status(200).json({ JobData: addJobs, ApplicantsList: applicationLists, Templates: allGetTemplates, ShortlistedList: shortlistedApplicants });
   } catch (err) {
     return res.status(400).json({ error: err.message });
   }
