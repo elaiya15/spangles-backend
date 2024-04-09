@@ -1,37 +1,23 @@
 const express = require("express");
-const {AddJob,Category} = require("../Schema/AddJobSchema");
+const { AddJob, Category } = require("../Schema/AddJobSchema");
 const ApplicationList = require("../Schema/ApplicationSchema");
 const Templates = require("../Schema/TemplateSchema");
 const ShortlistedApplicant = require("../Schema/ShortListed");
-const SelectedCandidateModel = require("../Schema/SelectedCandidate.js"); // Import the SelectedCandidate model
+const SelectedCandidateModel = require("../Schema/SelectedCandidate.js");
 const { User, Profiles } = require('../Schema/RegesterSchema');
 const generateEmployeeCode = require('../controller/EmployeeCodeGenerater.js');
-
-
 
 // Get All Shortlisted ApplicationList
 exports.GetApplicationList = async (req, res, next) => {
   try {
     const shortlistedApplicants = await ShortlistedApplicant.find();
-    const AllGetTemplates = await Templates.find();
-    const applicants = await Promise.all(shortlistedApplicants.map(async (applicant) => {
-      console.log(applicant);
-      const application = await ApplicationList.findById(applicant.Applicant_id);
-      const job = await AddJob.findById(application.Job_id);
+    const allGetTemplates = await Templates.find();
+    const addJobs = await AddJob.find();
+    const applicationLists = await ApplicationList.find();
 
-      return {
-        ShortlistedList: {  ...applicant.toObject()},
-        // Templates: {  ...AllGetTemplates},
-        ApplicantsList: {  ...application.toObject()},
-        JobData: {
-          ...job.toObject()
-        }
-      };
-    }));
-
-    return res.status(200).json({ Templates:AllGetTemplates,Data:applicants} );
+    return res.status(200).json({ AddJob: addJobs, ApplicationList: applicationLists, Templates: allGetTemplates, shortlistedApplicants: shortlistedApplicants });
   } catch (err) {
-    return res.status(400).json({ message: " ID does not exist"});
+    return res.status(400).json({ error: err.message });
   }
 };
 
