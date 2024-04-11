@@ -15,5 +15,4 @@ router.post("/schedule/interview/:id", Selected.createInterviewRound);
 // Shortlisted Candidate Updated & create new Employee
 router.put("/:id", Selected.UpdateShortList);
 // router.post("/signin", Selected.signin);
-/admin/hiring/shortlisted/schedule/interview/
 module.exports = router;
