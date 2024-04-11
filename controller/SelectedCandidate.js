@@ -93,10 +93,10 @@ exports.UpdateShortList = async (req, res, next) => {
     const { id } = req.params;
     const CheckStatus = await ShortlistedApplicant.findById(id);
 
-    if (CheckStatus.status === req.body.status) {
+    if (CheckStatus.Result === req.body.Result) {
       return res
         .status(404)
-        .json({ msg: `Status ${req.body.status} Already Updated` });
+        .json({ msg: `Status ${req.body.Result} Already Updated` });
     }
 
     const updatedApplicant = await ShortlistedApplicant.findByIdAndUpdate(
@@ -106,13 +106,13 @@ exports.UpdateShortList = async (req, res, next) => {
     );
 
     // Check if the status is being updated to "Selected"
-    if (data.status === "Selected") {
+    if (data.Result === "Selected") {
       // Generate EmployeeCode
       const EmployeeCode = await generateEmployeeCode();
       // Create a new SelectedCandidate applicant based on the updated data
       const Selected = { ...updatedApplicant.toObject() };
       delete Selected._id; // Remove the _id field
-      delete Selected.status; // Remove the status field
+      delete Selected.Result; // Remove the status field
       delete Selected.InterviewStatus; // Remove the InterviewStatus field
       delete Selected.InterviewMode; // Remove the InterviewMode field
       Selected.EmployeeCode = EmployeeCode;
