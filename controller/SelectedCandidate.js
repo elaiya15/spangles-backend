@@ -7,6 +7,7 @@ const SelectedCandidateModel = require("../Schema/SelectedCandidate.js");
 const { User, Profiles } = require("../Schema/RegesterSchema");
 const generateEmployeeCode = require("../controller/EmployeeCodeGenerater.js");
 
+
 // Get All Shortlisted ApplicationList
 exports.GetApplicationList = async (req, res, next) => {
   try {
@@ -34,7 +35,7 @@ exports.GetApplicationList = async (req, res, next) => {
 exports.createInterviewRound = async (req, res) => {
   try {
     const { Id } = req.params;
-    const { Result, InterviewStatus, InterviewData } = req.body;
+    const {InterviewData } = req.body;
 
     // Find the shortlisted applicant by shortlistedId
     const shortlistedApplicant = await ShortlistedApplicant.findById(Id);

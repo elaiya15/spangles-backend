@@ -12,6 +12,24 @@ const applicationListSchema = new Schema({
   Description: { type: String, trim: true },
   Experience:{ type: String, trim: true },
   Email: { type: String, trim: true },
+  MobileNumber:{
+    type: String,
+    validate: {
+      validator: function (v) {
+        return /^[0-9]{10}$/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    },
+  },
+  AlternateMobileNumber:{
+    type: String,
+    validate: {
+      validator: function (v) {
+        return /^[0-9]{10}$/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    },
+  },
   Status: {
     type: String,
     enum: ['New', 'Shortlist', 'Reject', 'On Hold'],

@@ -8,11 +8,12 @@ const router = express.Router();
 
 router.get("/list/all", Selected.GetApplicationList);
 // create interview round
-router.post("/createInterviewRound", Selected.createInterviewRound);
+router.post("/schedule/interview/:id", Selected.createInterviewRound);
+// router.post("/reschedule/interview/:id", Selected.reInterviewRound);
 // update interview round 
 // router.put("/updateInterview", Selected.updateInterviewRound);
 // Shortlisted Candidate Updated & create new Employee
 router.put("/:id", Selected.UpdateShortList);
 // router.post("/signin", Selected.signin);
-
+/admin/hiring/shortlisted/schedule/interview/
 module.exports = router;
