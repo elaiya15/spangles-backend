@@ -7,7 +7,6 @@ const SelectedCandidateModel = require("../Schema/SelectedCandidate.js");
 const { User, Profiles } = require("../Schema/RegesterSchema");
 const generateEmployeeCode = require("../controller/EmployeeCodeGenerater.js");
 
-
 // Get All Shortlisted ApplicationList
 exports.GetApplicationList = async (req, res, next) => {
   try {
@@ -17,15 +16,13 @@ exports.GetApplicationList = async (req, res, next) => {
     const applicationLists = await ApplicationList.find();
     const Employees = await Profiles.find();
 
-    return res
-      .status(200)
-      .json({
-        JobData: addJobs,
-        ApplicantsList: applicationLists,
-        Templates: allGetTemplates,
-        ShortlistedList: shortlistedApplicants,
-        Employees:Employees
-      });
+    return res.status(200).json({
+      JobData: addJobs,
+      ApplicantsList: applicationLists,
+      Templates: allGetTemplates,
+      ShortlistedList: shortlistedApplicants,
+      Employees: Employees,
+    });
   } catch (err) {
     return res.status(400).json({ error: err.message });
   }
@@ -35,7 +32,7 @@ exports.GetApplicationList = async (req, res, next) => {
 exports.createInterviewRound = async (req, res) => {
   try {
     const { id } = req.params;
-    const {InterviewData } = req.body;
+    const { InterviewData } = req.body;
     // Find the shortlisted applicant by shortlistedId
     const shortlistedApplicant = await ShortlistedApplicant.findById(id);
     if (!shortlistedApplicant) {
@@ -45,12 +42,11 @@ exports.createInterviewRound = async (req, res) => {
     }
     shortlistedApplicant.Result = "In Progress";
     shortlistedApplicant.InterviewStatus =
-      "Scheduled to Round " + shortlistedApplicant.InterviewRounds.length + 1;
+      "Scheduled to Round " + (shortlistedApplicant.InterviewRounds.length + 1);
 
     // Push the new interview round data to the InterviewRounds array
     shortlistedApplicant.InterviewRounds.push(InterviewData);
     await shortlistedApplicant.save();
-
 
     return res
       .status(201)
