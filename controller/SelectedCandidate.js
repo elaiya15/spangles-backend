@@ -58,6 +58,39 @@ exports.createInterviewRound = async (req, res) => {
   }
 };
 
+
+exports.reInterviewRound = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { InterviewRound } = req.body;
+
+    // Find the shortlisted applicant by shortlistedId
+    const shortlistedApplicant = await ShortlistedApplicant.findById(id);
+    if (!shortlistedApplicant) {
+      return res.status(404).json({ message: 'Shortlisted applicant not found' });
+    }
+
+    // Find the interview round with Round in the InterviewRounds array
+    const roundIndex = shortlistedApplicant.InterviewRounds.findIndex(round => round.Round === InterviewRound.Round);
+    if (roundIndex === -1) {
+      return res.status(404).json({ message: 'Interview round with Round: not found' });
+    }
+
+    // Update the interview round data
+    shortlistedApplicant.InterviewRounds[roundIndex] = InterviewRound;
+
+    await shortlistedApplicant.save();
+
+    return res.status(200).json({ message: 'Interview round updated successfully', updatedRoundData });
+  } catch (error) {
+    return res.status(400).json({ message: "Interview round update failed" });
+  }
+};
+
+
+
+
+
 // //  updateInterviewRound
 // exports.updateInterviewRound = async (req, res) => {
 //   try {
