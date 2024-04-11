@@ -34,11 +34,10 @@ exports.GetApplicationList = async (req, res, next) => {
 // createInterviewRound
 exports.createInterviewRound = async (req, res) => {
   try {
-    const { Id } = req.params;
+    const { id } = req.params;
     const {InterviewData } = req.body;
-
     // Find the shortlisted applicant by shortlistedId
-    const shortlistedApplicant = await ShortlistedApplicant.findById(Id);
+    const shortlistedApplicant = await ShortlistedApplicant.findById(id);
     if (!shortlistedApplicant) {
       return res
         .status(404)
