@@ -12,7 +12,7 @@ router.get("/list/all", Selected.GetApplicationList);
 router.post("/schedule/interview/:id", Selected.createInterviewRound);
 
 // Reschedule interview round 
-router.post("/reschedule/interview/:id", Selected.reInterviewRound);
+router.put("/reschedule/interview/:id", Selected.reInterviewRound);
 
 // Shortlisted Candidate Updated & create new Employee
 router.put("/interview/status/update/:id", Selected.UpdateShortList);
