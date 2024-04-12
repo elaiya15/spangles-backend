@@ -4,15 +4,17 @@ const Selected = require("../controller/SelectedCandidate");
 
 
 const router = express.Router();
-// router path = /selected
 
+//  get all Selected list
 router.get("/list/all", Selected.GetApplicationList);
+
 // create interview round
 router.post("/schedule/interview/:id", Selected.createInterviewRound);
+
+// Reschedule interview round 
 router.post("/reschedule/interview/:id", Selected.reInterviewRound);
-// update interview round 
-// router.put("/updateInterview", Selected.updateInterviewRound);
+
 // Shortlisted Candidate Updated & create new Employee
-router.put("/:id", Selected.UpdateShortList);
-// router.post("/signin", Selected.signin);
+router.put("/interview/status/update/:id", Selected.UpdateShortList);
+
 module.exports = router;
