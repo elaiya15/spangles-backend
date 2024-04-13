@@ -61,9 +61,11 @@ exports.createInterviewRound = async (req, res) => {
 
 exports.reInterviewRound = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { InterviewData } = req.body;
 
+    const { id } = req.params;
+
+    const { InterviewData } = req.body;
+// console.log(InterviewData);
     // Find the shortlisted applicant by shortlistedId
     const shortlistedApplicant = await ShortlistedApplicant.findById(id);
     if (!shortlistedApplicant) {
@@ -71,7 +73,8 @@ exports.reInterviewRound = async (req, res) => {
     }
 
     // Find the interview round with Round in the InterviewRounds array
-    const roundIndex = shortlistedApplicant.InterviewRounds.findIndex(round => round.Round == InterviewData.Round);
+    const roundIndex = shortlistedApplicant.InterviewRounds.findIndex(round => round.Round === InterviewData.Round);
+    // console.log(roundIndex);
     if (roundIndex === -1) {
       return res.status(404).json({ message: 'Interview  Round: not found' });
     }
