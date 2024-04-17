@@ -144,7 +144,8 @@ exports.UpdateShortList = async (req, res, next) => {
 
 
 //             <<<<<<<<<<<<<<<<<<<<<< JoiningList >>>>>>>>>>>>>>>>>>>>>>>>>>>
-// Get All Shortlisted ApplicationList
+
+// Get All JoiningList 
 exports.GetJoiningList = async (req, res, next) => {
   try {
     const SelectedCandidate = await SelectedCandidateModel.find();
