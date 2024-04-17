@@ -15,6 +15,7 @@ exports.GetApplicationList = async (req, res, next) => {
   }
 };
 
+// /admin/hiring/joining-form/list/all
 
 /// CreateApplicationList
 exports.CreateApplicationList = async (req, res, next) => {

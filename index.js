@@ -7,6 +7,7 @@ const applied = require("./routes/AppliedRoutes");
 const selected = require("./routes/SelectedRouter");
 const Templeta = require("./routes/TempletRouter");
 const AddJob = require("./routes/Addjob");
+const joiningForm = require("./routes/joiningForm");
 // const get = require("./routes/getRoutes");
 const auth = require("./models/auth");
 require("dotenv").config();
@@ -30,6 +31,7 @@ app.use("/admin/hiring/template",Templeta);
 app.use("/admin/hiring/jobPost",AddJob );
 app.use("/admin/hiring/applicant", applied);
 app.use("/admin/hiring/shortlisted", selected);
+app.use("/admin/hiring/joining-form", joiningForm);
 // app.use("/get", get);
 
 // Connect to MongoDB
