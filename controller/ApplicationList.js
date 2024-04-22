@@ -34,10 +34,10 @@ exports.UpdateApplicationList = async (req, res, next) => {
   {
     const { id } = req.params;
 
-    // const  CheckStatus = await ApplicationList.findById(id)
-    // if (CheckStatus.Status === req.body.Status) {
-    //   return res.status(404).json({message:  `Status  Already ${req.body.Status}` });
-    // }
+    const  CheckStatus = await ApplicationList.findById(id)
+    if (CheckStatus.Status === req.body.Status) {
+      return res.status(404).json({message:  `Status  Already ${req.body.Status}` });
+    }
 
     const updatedApplicant = await ApplicationList.findByIdAndUpdate(
       id,

@@ -98,7 +98,7 @@ exports.reInterviewRound = async (req, res) => {
 
 
 
-// Update an applicant by ID
+// Update an applicant by ID And it`s add to JoiningList 
 exports.UpdateShortList = async (req, res, next) => {
   const data = req.body;
   try {
@@ -143,6 +143,8 @@ exports.UpdateShortList = async (req, res, next) => {
 };
 
 
+
+
 //             <<<<<<<<<<<<<<<<<<<<<< JoiningList >>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 // Get All JoiningList 
@@ -163,3 +165,64 @@ exports.GetJoiningList = async (req, res, next) => {
     return res.status(400).json({ message: err.message });
   }
 };
+
+
+exports.updateJoiningList = async (req, res, next) => {
+try {
+  
+  const updatedApplicant = await SelectedCandidateModel.findByIdAndUpdate(
+    id,
+    req.body,
+    { new: true }
+  );
+} catch (error) {
+  return res.status(400).json({ message: err.message }); 
+}}
+
+// get SingleJoiningList
+exports.SingleJoiningList = async (req, res, next) => {
+   try {
+    const { id } = req.params;
+    const SingleList = await SelectedCandidateModel.findById(id);
+    
+    // Check if SingleList exists and has the Applicant_id property
+    if (!SingleList || !SingleList.Applicant_id) {
+      return res.status(404).json({ message: 'Selected candidate not found or missing Applicant_id' });
+    }
+
+    // Assuming Applicant_id is a valid ID for ApplicationList
+    const Applicant = await ApplicationList.findById(SingleList.Applicant_id);
+
+    if (!Applicant) {
+      return res.status(404).json({ message: 'Associated applicant not found' });
+    }
+    // Assuming Job_id is a valid ID for JobList
+    const addJobs = await AddJob.findById(Applicant.Job_id);
+
+    if (!addJobs) {
+      return res.status(404).json({ message: 'Associated Job not found' });
+    }
+
+  // Create a new object with the desired fields
+  const data = {
+    _id: SingleList._id,
+    EmployeeCode: SingleList.EmployeeCode,
+    Status: SingleList.Status,
+    Name: Applicant.Name,
+    Designation: addJobs.Designation
+  
+  };
+
+  return res.status(200).json({ Data: data });
+ } catch (error) {
+  return res.status(400).json({ message: error.message });
+ }
+};
+
+
+
+
+
+
+
+  
