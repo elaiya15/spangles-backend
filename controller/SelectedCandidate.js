@@ -78,11 +78,6 @@ exports.reInterviewRound = async (req, res) => {
     if (roundIndex === -1) {
       return res.status(404).json({ message: 'Interview  Round: not found' });
     }
-    
-    // shortlistedApplicant.Result = "In Progress";
-    // shortlistedApplicant.InterviewStatus =
-    //   "Scheduled to Round " + (shortlistedApplicant.InterviewRounds.length);
-
     // Update the interview round data
     shortlistedApplicant.InterviewRounds[roundIndex] = InterviewData;
 
@@ -166,18 +161,21 @@ exports.GetJoiningList = async (req, res, next) => {
   }
 };
 
-
+// updateJoiningList
 exports.updateJoiningList = async (req, res, next) => {
+
 try {
-  
+
   const updatedApplicant = await SelectedCandidateModel.findByIdAndUpdate(
     id,
     req.body,
+    {Status:"SentMail"},
     { new: true }
   );
 } catch (error) {
   return res.status(400).json({ message: err.message }); 
 }}
+
 
 // get SingleJoiningList
 exports.SingleJoiningList = async (req, res, next) => {
@@ -210,7 +208,6 @@ exports.SingleJoiningList = async (req, res, next) => {
     Status: SingleList.Status,
     Name: Applicant.Name,
     Designation: addJobs.Designation
-  
   };
 
   return res.status(200).json({ Data: data });
@@ -218,6 +215,24 @@ exports.SingleJoiningList = async (req, res, next) => {
   return res.status(400).json({ message: error.message });
  }
 };
+// update client Joining form
+exports.update_Client_Joining_Form = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    req.body.Status = "Approve";
+    console.log(req.body);
+    const updatedClient = await SelectedCandidateModel.findByIdAndUpdate(
+      id,
+      req.body,
+      { new: true }
+    );
+
+    return res.status(200).json({ message: updatedClient });
+  } catch (error) { // Changed from 'err' to 'error'
+    return res.status(400).json({ message: error.message }); // Changed from 'err.message' to 'error.message'
+  }
+};
+
 
 
 
