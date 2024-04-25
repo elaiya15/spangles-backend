@@ -201,16 +201,10 @@ exports.SingleJoiningList = async (req, res, next) => {
       return res.status(404).json({ message: 'Associated Job not found' });
     }
 
-  // Create a new object with the desired fields
-  const data = {
-    _id: SingleList._id,
-    EmployeeCode: SingleList.EmployeeCode,
-    Status: SingleList.Status,
-    Name: Applicant.Name,
-    Designation: addJobs.Designation
-  };
+    SingleList.Name=Applicant.Name
+    SingleList.Designation=addJobs.Designation
 
-  return res.status(200).json({ Data: data });
+  return res.status(200).json({ Data: SingleList });
  } catch (error) {
   return res.status(400).json({ message: error.message });
  }
