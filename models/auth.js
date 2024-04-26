@@ -9,9 +9,8 @@ exports.authenticateUser = (req, res, next) => {
   // Verify Token
   try {
     const user = jwt.verify(req.headers.accesstoken, process.env.SECRET_KEY);
-    req.body.currentuser = user;
-    console.log(user)
-    
+    // req.body.currentuser = user;
+    // console.log(user)
     next();
   } catch (err) {
     console.error(err);

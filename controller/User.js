@@ -12,11 +12,13 @@ exports.signup = async (req, res, next) => {
     if (existingUser) {
       return res.status(400).json({ message: 'UserName is already registered.' });
     }
-
-    // Create a new profile
-    const newProfile = new Profiles(Profile);
-    const savedProfile = await newProfile.save();
-
+    // Update new profile
+    const id = req.params.id; 
+    const ProfileUpdated = await Profiles.findByIdAndUpdate(
+      id,
+      Profile,
+      { new: true }
+    );
     // Hash the password
     const hashedPassword = await bcrypt.hash(Password, 10);
 
@@ -25,7 +27,7 @@ exports.signup = async (req, res, next) => {
       UserName,
       Password: hashedPassword,
       EmployeeType,
-      Profile: savedProfile._id
+      Profile: ProfileUpdated._id
     });
 
     // Save the new user

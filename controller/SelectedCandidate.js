@@ -1,11 +1,21 @@
 const express = require("express");
+
 const { AddJob, Category } = require("../Schema/AddJobSchema");
 const ApplicationList = require("../Schema/ApplicationSchema");
 const Templates = require("../Schema/TemplateSchema");
 const ShortlistedApplicant = require("../Schema/ShortListed");
 const SelectedCandidateModel = require("../Schema/SelectedCandidate.js");
 const { User, Profiles } = require("../Schema/RegesterSchema");
-const generateEmployeeCode = require("../controller/EmployeeCodeGenerater.js");
+const generateEmployeeCode = require("../Utils/EmployeeCodeGenerater.js");
+const SendEmail = require("../Utils/sendEmail");
+const jwt = require('jsonwebtoken'); // For generating JWT tokens
+
+const uploadFile = require("../controller/fileupload.js");
+
+// const uploadFile = require("../controller/fileupload.js");
+
+
+
 
 // Get All Shortlisted ApplicationList
 exports.GetApplicationList = async (req, res, next) => {
@@ -140,7 +150,14 @@ exports.UpdateShortList = async (req, res, next) => {
 
 
 
+
+
 //             <<<<<<<<<<<<<<<<<<<<<< JoiningList >>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+
+
 
 // Get All JoiningList 
 exports.GetJoiningList = async (req, res, next) => {
@@ -162,49 +179,75 @@ exports.GetJoiningList = async (req, res, next) => {
 };
 
 // updateJoiningList
-exports.updateJoiningList = async (req, res, next) => {
+exports.SendMailJoiningList = async (req, res, next) => {
+  const { id } = req.params;
 
 try {
 
+  const userEmail= await SelectedCandidateModel.findById(id);
+  // Generate a Verify JWT token
+   const token = jwt.sign({ userId: userEmail._id}, process.env.SECRET_KEY, { expiresIn: '1d' });
   const updatedApplicant = await SelectedCandidateModel.findByIdAndUpdate(
-    id,
-    req.body,
-    {Status:"SentMail"},
-    { new: true }
-  );
+      id,
+      {Status:"In Progress",VerifyToken:token},
+      { new: true }
+    );
+    if (updatedApplicant) {
+      const subject = "Profile details";
+      const text=`This Link Valid For 2 MINUTES https://front-end-pass.vercel.app/Profile-details/${id}/${updatedApplicant.VerifyToken}`
+   
+      // Sent Mail
+      const Mail = await SendEmail(res, userEmail.EmailPersonal, subject, text);
+      return Mail;
+    } 
+    else {
+      return res.status(400).json({ message: "No applicant found" });
+    }
 } catch (error) {
-  return res.status(400).json({ message: err.message }); 
+  return res.status(400).json({ message: error.message }); 
 }}
 
 
-// get SingleJoiningList
+// get SingleJoiningList to sent  client Joining form useEffect
 exports.SingleJoiningList = async (req, res, next) => {
    try {
     const { id } = req.params;
-    const SingleList = await SelectedCandidateModel.findById(id);
+    const token =req.headers.accesstoken
+
+  // const {VerifyToken}= await SelectedCandidateModel.findById(id);
+  const SingleList = await SelectedCandidateModel.findById(id);
+  
+    // console.log(VerifyToken);
+    if (SingleList.VerifyToken===token) {
     
-    // Check if SingleList exists and has the Applicant_id property
-    if (!SingleList || !SingleList.Applicant_id) {
-      return res.status(404).json({ message: 'Selected candidate not found or missing Applicant_id' });
-    }
-
-    // Assuming Applicant_id is a valid ID for ApplicationList
-    const Applicant = await ApplicationList.findById(SingleList.Applicant_id);
-
-    if (!Applicant) {
-      return res.status(404).json({ message: 'Associated applicant not found' });
-    }
-    // Assuming Job_id is a valid ID for JobList
-    const addJobs = await AddJob.findById(Applicant.Job_id);
-
-    if (!addJobs) {
-      return res.status(404).json({ message: 'Associated Job not found' });
-    }
-
-    SingleList.Name=Applicant.Name
-    SingleList.Designation=addJobs.Designation
-
+      // Check if SingleList exists and has the Applicant_id property
+      if (!SingleList || !SingleList.Applicant_id) {
+        return res.status(404).json({ message: 'Selected candidate not found or missing Applicant_id' });
+      }
+  
+      // Assuming Applicant_id is a valid ID for ApplicationList
+      const Applicant = await ApplicationList.findById(SingleList.Applicant_id);
+  
+      if (!Applicant) {
+        return res.status(404).json({ message: 'Associated applicant not found' });
+      }
+      // Assuming Job_id is a valid ID for JobList
+      const addJobs = await AddJob.findById(Applicant.Job_id);
+  
+      if (!addJobs) {
+        return res.status(404).json({ message: 'Associated Job not found' });
+      }
+  
+      SingleList.Name=Applicant.Name
+      SingleList.Designation=addJobs.Designation
   return res.status(200).json({ Data: SingleList });
+      
+    } else {
+  return res.status(401).json({message:"Unauthorized Token" });
+      
+    }
+ 
+
  } catch (error) {
   return res.status(400).json({ message: error.message });
  }
@@ -213,7 +256,8 @@ exports.SingleJoiningList = async (req, res, next) => {
 exports.update_Client_Joining_Form = async (req, res, next) => {
   try {
     const id = req.params.id;
-    req.body.Status = "Approve";
+
+    req.body.Status = "Waiting";
     console.log(req.body);
     const updatedClient = await SelectedCandidateModel.findByIdAndUpdate(
       id,
@@ -226,6 +270,42 @@ exports.update_Client_Joining_Form = async (req, res, next) => {
     return res.status(400).json({ message: error.message }); // Changed from 'err.message' to 'error.message'
   }
 };
+
+
+ exports.ApproveJoining_Form = async (req, res, next) => {
+ 
+
+  try {
+    const id = req.params.id;
+    const updatedClient = await SelectedCandidateModel.findByIdAndUpdate(
+      id,
+      {Status:"Approved"},
+      { new: true }
+    );
+// console.log(updatedClient);
+const newEmployeeProfile = { ...updatedClient.toObject() };
+
+
+ // Create a new profile
+ const newProfile = new Profiles(newEmployeeProfile);
+ const savedProfile = await newProfile.save();
+
+
+
+    return res.status(200).json({ message: savedProfile });
+  } catch (error) { // Changed from 'err' to 'error'
+    return res.status(400).json({ message: error.message }); // Changed from 'err.message' to 'error.message'
+  }
+};
+
+
+
+
+
+
+
+
+
 
 
 

@@ -16,19 +16,20 @@ const SelectedCandidateSchema = new Schema({
     Qualification: { type: String, trim: true },
     pdf: { type: String }
   }],
-  PhoneNumber: { type: Number, trim: true },
-  AlternativePhoneNumber: { type: Number, trim: true },
+  PhoneNumber: { type: String, trim: true },
+  AlternativePhoneNumber: { type: String, trim: true },
   EmailOffice: { type: String, unique: true, trim: true },
   EmailPersonal: { type: String, unique: true, trim: true },
   BloodGroup: { type: String, trim: true },
-  AadhaarNumber: { type: Number },
+  AadhaarNumber: { type: String },
   AddressPresent: {
     AddressLine1: { type: String, minlength: 0, maxlength: 500 },
     AddressLine2: { type: String, minlength: 0, maxlength: 500 },
     City: { type: String, trim: true },
     District: { type: String, trim: true },
     State: { type: String, trim: true },
-    ZipCode: { type: Number }
+    Country:{type: String, trim: true },
+    ZipCode: { type: String }
   },
   AddressPermanent: {
     AddressLine1: { type: String, minlength: 0, maxlength: 500 },
@@ -36,15 +37,19 @@ const SelectedCandidateSchema = new Schema({
     City: { type: String, trim: true },
     District: { type: String, trim: true },
     State: { type: String, trim: true },
-    ZipCode: { type: Number }
+    Country:{type: String, trim: true },
+    ZipCode: { type: String }
   },
-  AccountNumber: { type: Number },
+  AccountNumber: { type: String },
   IFSCCode: { type: String, trim: true },
   BankName: { type: String, trim: true },
   PANNumber: { type: String, trim: true },
+  VerifyToken:{
+    type: String
+},
   Status: {
     type: String,
-    enum: ['Approve', 'Approved', 'SendMail', 'Waiting for Respond'],
+    enum: ['In Progress', 'Approved', 'SendMail', 'Waiting'],
     default: 'SendMail'
   }
 });
