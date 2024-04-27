@@ -8,7 +8,7 @@ exports.EmployeeProfile = async (req, res, next) => {
     
     const Profile = await Profiles.find();
 
-console.log(Profile);
+// console.log(Profile);
 
     return res.status(200).json({ message: Profile });
   } catch (error) { // Changed from 'err' to 'error'

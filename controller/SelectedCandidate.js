@@ -8,12 +8,8 @@ const SelectedCandidateModel = require("../Schema/SelectedCandidate.js");
 const { User, Profiles } = require("../Schema/RegesterSchema");
 const generateEmployeeCode = require("../Utils/EmployeeCodeGenerater.js");
 const SendEmail = require("../Utils/sendEmail");
-const jwt = require('jsonwebtoken'); // For generating JWT tokens
-
-const uploadFile = require("../controller/fileupload.js");
-
-// const uploadFile = require("../controller/fileupload.js");
-
+const uploadFile = require("../Utils/fileupload");
+const jwt = require("jsonwebtoken"); // For generating JWT tokens
 
 
 
@@ -68,42 +64,42 @@ exports.createInterviewRound = async (req, res) => {
   }
 };
 
-
 exports.reInterviewRound = async (req, res) => {
   try {
-
     const { id } = req.params;
 
     const { InterviewData } = req.body;
-// console.log(InterviewData);
+    // console.log(InterviewData);
     // Find the shortlisted applicant by shortlistedId
     const shortlistedApplicant = await ShortlistedApplicant.findById(id);
     if (!shortlistedApplicant) {
-      return res.status(404).json({ message: 'Shortlisted applicant not found' });
+      return res
+        .status(404)
+        .json({ message: "Shortlisted applicant not found" });
     }
 
     // Find the interview round with Round in the InterviewRounds array
-    const roundIndex = shortlistedApplicant.InterviewRounds.findIndex(round => round.Round === InterviewData.Round);
+    const roundIndex = shortlistedApplicant.InterviewRounds.findIndex(
+      (round) => round.Round === InterviewData.Round
+    );
     // console.log(roundIndex);
     if (roundIndex === -1) {
-      return res.status(404).json({ message: 'Interview  Round: not found' });
+      return res.status(404).json({ message: "Interview  Round: not found" });
     }
     // Update the interview round data
     shortlistedApplicant.InterviewRounds[roundIndex] = InterviewData;
 
     await shortlistedApplicant.save();
 
-    return res.status(200).json({ message: 'Interview Re-Schedule Successfully' });
+    return res
+      .status(200)
+      .json({ message: "Interview Re-Schedule Successfully" });
   } catch (error) {
     return res.status(400).json({ message: "Interview round update failed" });
   }
 };
 
-
-
-
-
-// Update an applicant by ID And it`s add to JoiningList 
+// Update an applicant by ID And it`s add to JoiningList
 exports.UpdateShortList = async (req, res, next) => {
   const data = req.body;
   try {
@@ -147,26 +143,15 @@ exports.UpdateShortList = async (req, res, next) => {
   }
 };
 
-
-
-
-
-
 //             <<<<<<<<<<<<<<<<<<<<<< JoiningList >>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-
-
-
-
-
-// Get All JoiningList 
+// Get All JoiningList
 exports.GetJoiningList = async (req, res, next) => {
   try {
     const SelectedCandidate = await SelectedCandidateModel.find();
-    
+
     const addJobs = await AddJob.find();
     const applicationLists = await ApplicationList.find();
-  
 
     return res.status(200).json({
       JobData: addJobs,
@@ -182,75 +167,76 @@ exports.GetJoiningList = async (req, res, next) => {
 exports.SendMailJoiningList = async (req, res, next) => {
   const { id } = req.params;
 
-try {
-
-  const userEmail= await SelectedCandidateModel.findById(id);
-  // Generate a Verify JWT token
-   const token = jwt.sign({ userId: userEmail._id}, process.env.SECRET_KEY, { expiresIn: '1d' });
-  const updatedApplicant = await SelectedCandidateModel.findByIdAndUpdate(
+  try {
+    const userEmail = await SelectedCandidateModel.findById(id);
+    // Generate a Verify JWT token
+    const token = jwt.sign({ userId: userEmail._id }, process.env.SECRET_KEY, {
+      expiresIn: "1d",
+    });
+    const updatedApplicant = await SelectedCandidateModel.findByIdAndUpdate(
       id,
-      {Status:"In Progress",VerifyToken:token},
+      { Status: "In Progress", VerifyToken: token },
       { new: true }
     );
     if (updatedApplicant) {
       const subject = "Profile details";
-      const text=`This Link Valid For 2 MINUTES https://front-end-pass.vercel.app/Profile-details/${id}/${updatedApplicant.VerifyToken}`
-   
+      const text = `This Link Valid For 2 MINUTES https://front-end-pass.vercel.app/Profile-details/${id}/${updatedApplicant.VerifyToken}`;
+
       // Sent Mail
       const Mail = await SendEmail(res, userEmail.EmailPersonal, subject, text);
       return Mail;
-    } 
-    else {
+    } else {
       return res.status(400).json({ message: "No applicant found" });
     }
-} catch (error) {
-  return res.status(400).json({ message: error.message }); 
-}}
-
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
 
 // get SingleJoiningList to sent  client Joining form useEffect
 exports.SingleJoiningList = async (req, res, next) => {
-   try {
+  try {
     const { id } = req.params;
-    const token =req.headers.accesstoken
+    const token = req.headers.authorization;
 
-  // const {VerifyToken}= await SelectedCandidateModel.findById(id);
-  const SingleList = await SelectedCandidateModel.findById(id);
-  
+    // const {VerifyToken}= await SelectedCandidateModel.findById(id);
+    const SingleList = await SelectedCandidateModel.findById(id);
+
     // console.log(VerifyToken);
-    if (SingleList.VerifyToken===token) {
-    
+    if (SingleList.VerifyToken === token) {
       // Check if SingleList exists and has the Applicant_id property
       if (!SingleList || !SingleList.Applicant_id) {
-        return res.status(404).json({ message: 'Selected candidate not found or missing Applicant_id' });
+        return res
+          .status(404)
+          .json({
+            message: "Selected candidate not found or missing Applicant_id",
+          });
       }
-  
+
       // Assuming Applicant_id is a valid ID for ApplicationList
       const Applicant = await ApplicationList.findById(SingleList.Applicant_id);
-  
+
       if (!Applicant) {
-        return res.status(404).json({ message: 'Associated applicant not found' });
+        return res
+          .status(404)
+          .json({ message: "Associated applicant not found" });
       }
       // Assuming Job_id is a valid ID for JobList
       const addJobs = await AddJob.findById(Applicant.Job_id);
-  
-      if (!addJobs) {
-        return res.status(404).json({ message: 'Associated Job not found' });
-      }
-  
-      SingleList.Name=Applicant.Name
-      SingleList.Designation=addJobs.Designation
-  return res.status(200).json({ Data: SingleList });
-      
-    } else {
-  return res.status(401).json({message:"Unauthorized Token" });
-      
-    }
- 
 
- } catch (error) {
-  return res.status(400).json({ message: error.message });
- }
+      if (!addJobs) {
+        return res.status(404).json({ message: "Associated Job not found" });
+      }
+
+      SingleList.Name = Applicant.Name;
+      SingleList.Designation = addJobs.Designation;
+      return res.status(200).json({ Data: SingleList });
+    } else {
+      return res.status(401).json({ message: "Unauthorized Token" });
+    }
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
 };
 // update client Joining form
 exports.update_Client_Joining_Form = async (req, res, next) => {
@@ -258,6 +244,55 @@ exports.update_Client_Joining_Form = async (req, res, next) => {
     const id = req.params.id;
 
     req.body.Status = "Waiting";
+    const Data = {
+      Designation: "Software Engineer",
+      Name: "John Doe",
+      EmployeeCode: "E12345",
+      ProfileImage: "https://example.com/profile-image.jpg",
+      JoiningDate: "2024-04-27",
+      Gender: "Male",
+      MaritalStatus: "Single",
+      DateofBirth: "1990-01-01",
+      EducationQualification: [
+        {
+          Qualification: "Bachelor of Science",
+          pdf: "https://example.com/degree.pdf",
+        },
+        {
+          Qualification: "Master of Science",
+          pdf: "https://example.com/masters_degree.pdf",
+        },
+      ],
+      PhoneNumber: "+1234567890",
+      AlternativePhoneNumber: "+9876543210",
+      EmailOffice: "john.doe@example.com",
+      EmailPersonal: "john.doe.personal@example.com",
+      BloodGroup: "O+",
+      AadhaarNumber: "1234 5678 9012",
+      AddressPresent: {
+        AddressLine1: "123 Main St",
+        AddressLine2: "Apt 456",
+        City: "New York",
+        District: "Manhattan",
+        State: "NY",
+        Country: "USA",
+        ZipCode: "10001",
+      },
+      AddressPermanent: {
+        AddressLine1: "456 Elm St",
+        AddressLine2: "Unit 789",
+        City: "Los Angeles",
+        District: "LA",
+        State: "CA",
+        Country: "USA",
+        ZipCode: "90001",
+      },
+      AccountNumber: "1234567890123456",
+      IFSCCode: "ABCD0123456",
+      BankName: "Example Bank",
+      PANNumber: "ABCDE1234F",
+    };
+
     console.log(req.body);
     const updatedClient = await SelectedCandidateModel.findByIdAndUpdate(
       id,
@@ -266,52 +301,30 @@ exports.update_Client_Joining_Form = async (req, res, next) => {
     );
 
     return res.status(200).json({ message: updatedClient });
-  } catch (error) { // Changed from 'err' to 'error'
+  } catch (error) {
+    // Changed from 'err' to 'error'
     return res.status(400).json({ message: error.message }); // Changed from 'err.message' to 'error.message'
   }
 };
 
-
- exports.ApproveJoining_Form = async (req, res, next) => {
- 
-
+exports.ApproveJoining_Form = async (req, res, next) => {
   try {
     const id = req.params.id;
     const updatedClient = await SelectedCandidateModel.findByIdAndUpdate(
       id,
-      {Status:"Approved"},
+      { Status: "Approved" },
       { new: true }
     );
-// console.log(updatedClient);
-const newEmployeeProfile = { ...updatedClient.toObject() };
+    // console.log(updatedClient);
+    const newEmployeeProfile = { ...updatedClient.toObject() };
 
+    // Create a new profile
+    const newProfile = new Profiles(newEmployeeProfile);
+    const savedProfile = await newProfile.save();
 
- // Create a new profile
- const newProfile = new Profiles(newEmployeeProfile);
- const savedProfile = await newProfile.save();
-
-
-
-    return res.status(200).json({ message: savedProfile });
-  } catch (error) { // Changed from 'err' to 'error'
+    return res.status(200).json({ message: "Employee Approved successfully " });
+  } catch (error) {
+    // Changed from 'err' to 'error'
     return res.status(400).json({ message: error.message }); // Changed from 'err.message' to 'error.message'
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
