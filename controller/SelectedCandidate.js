@@ -168,9 +168,12 @@ exports.SendMailJoiningList = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const userEmail = await SelectedCandidateModel.findById(id);
+    const user = await SelectedCandidateModel.findById(id);
+    // / Assuming Applicant_id is a valid ID for ApplicationList
+const Applicant = await ApplicationList.findById(user.Applicant_id);
+// console.log(Applicant);
     // Generate a Verify JWT token
-    const token = jwt.sign({ userId: userEmail._id }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
       expiresIn: "1d",
     });
     const updatedApplicant = await SelectedCandidateModel.findByIdAndUpdate(
@@ -183,8 +186,7 @@ exports.SendMailJoiningList = async (req, res, next) => {
       const text = `This Link Valid For 2 MINUTES https://front-end-pass.vercel.app/Profile-details/${id}?token=${updatedApplicant.VerifyToken}`;
 
       // Sent Mail
-      const Mail = await SendEmail(res, userEmail.EmailPersonal, subject, text);
-
+      const Mail = await SendEmail(res, Applicant.Email, subject, text);
       return Mail;
     } else {
       return res.status(400).json({ message: "No applicant found" });
@@ -194,14 +196,19 @@ exports.SendMailJoiningList = async (req, res, next) => {
   }
 };
 
+
+
 // Re-SendMailJoiningList
 exports.Re_SendMailJoiningList = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const userEmail = await SelectedCandidateModel.findById(id);
+    const user = await SelectedCandidateModel.findById(id);
+    // / Assuming Applicant_id is a valid ID for ApplicationList
+const Applicant = await ApplicationList.findById(user.Applicant_id);
+
     // Generate a Verify JWT token
-    const token = jwt.sign({ userId: userEmail._id }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
       expiresIn: "1d",
     });
     const updatedApplicant = await SelectedCandidateModel.findByIdAndUpdate(
@@ -214,7 +221,7 @@ exports.Re_SendMailJoiningList = async (req, res, next) => {
       const text = `This Link Valid For 2 MINUTES https://front-end-pass.vercel.app/Profile-details/${id}?token=${updatedApplicant.VerifyToken}`;
 
       // Sent Mail
-      const Mail = await SendEmail(res, userEmail.EmailPersonal, subject, text);
+      const Mail = await SendEmail(res, Applicant.Email, subject, text);
       return Mail;
     } else {
       return res.status(400).json({ message: "No applicant found" });
@@ -239,39 +246,41 @@ exports.SingleJoiningList = async (req, res, next) => {
     // const {VerifyToken}= await SelectedCandidateModel.findById(id);
     const SingleList = await SelectedCandidateModel.findById(id);
 
-    // console.log(VerifyToken);
-    if (SingleList.VerifyToken === token) {
-     // Check if SingleList exists and has the Applicant_id property
- if (!SingleList || !SingleList.Applicant_id) {
-  return res
-    .status(404)
-    .json({
-      message: "Selected candidate not found or missing Applicant_id",
-    });
-}
+  // Check if SingleList exists and has the Applicant_id property
+  if (!SingleList || !SingleList.Applicant_id) {
+    return res
+      .status(404)
+      .json({
+        message: "Selected candidate not found or missing Applicant_id",
+      });
+  }
+  
+  // Assuming Applicant_id is a valid ID for ApplicationList
+  const Applicant = await ApplicationList.findById(SingleList.Applicant_id);
+  
+  if (!Applicant) {
+    return res
+      .status(404)
+      .json({ message: "Associated applicant not found" });
+  }
+  // Assuming Job_id is a valid ID for JobList
+  const addJobs = await AddJob.findById(Applicant.Job_id);
+  
+  if (!addJobs) {
+    return res.status(404).json({ message: "Associated Job not found" });
+  }
+  
+  Applicant.Designation = addJobs.Designation;
+  
+  return res.status(200).json({ employee_details: SingleList,ApplicantList:Applicant, });
 
-// Assuming Applicant_id is a valid ID for ApplicationList
-const Applicant = await ApplicationList.findById(SingleList.Applicant_id);
 
-if (!Applicant) {
-  return res
-    .status(404)
-    .json({ message: "Associated applicant not found" });
-}
-// Assuming Job_id is a valid ID for JobList
-const addJobs = await AddJob.findById(Applicant.Job_id);
+    // if (SingleList.VerifyToken === token) {
+   
 
-if (!addJobs) {
-  return res.status(404).json({ message: "Associated Job not found" });
-}
-
-Applicant.Designation = addJobs.Designation;
-
-return res.status(200).json({ employee_details: SingleList,ApplicantList:Applicant, });
-
-    } else {
-      return res.status(401).json({ message: "Unauthorized Token" });
-    }
+    // } else {
+    //   return res.status(401).json({ message: "Unauthorized Token" });
+    // }
 
  
 
