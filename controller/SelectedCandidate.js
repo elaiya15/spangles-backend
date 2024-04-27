@@ -230,7 +230,7 @@ exports.SingleJoiningList = async (req, res, next) => {
 
       SingleList.Name = Applicant.Name;
       SingleList.Designation = addJobs.Designation;
-      return res.status(200).json({ Data: SingleList });
+      return res.status(200).json({ employee_details: SingleList });
     } else {
       return res.status(401).json({ message: "Unauthorized Token" });
     }
