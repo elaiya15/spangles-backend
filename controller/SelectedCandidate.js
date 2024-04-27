@@ -257,6 +257,7 @@ exports.SingleJoiningList = async (req, res, next) => {
   
   // Assuming Applicant_id is a valid ID for ApplicationList
   const Applicant = await ApplicationList.findById(SingleList.Applicant_id);
+  const SelectedApplicant = { ...Applicant.toObject() };
   
   if (!Applicant) {
     return res
@@ -270,9 +271,9 @@ exports.SingleJoiningList = async (req, res, next) => {
     return res.status(404).json({ message: "Associated Job not found" });
   }
   
-  Applicant.Designation = addJobs.Designation;
+  SelectedApplicant.Designation = addJobs.Designation;
   
-  return res.status(200).json({ employee_details: SingleList,ApplicantList:Applicant, });
+  return res.status(200).json({ employee_details: SingleList,ApplicantList:SelectedApplicant, });
 
 
     // if (SingleList.VerifyToken === token) {
