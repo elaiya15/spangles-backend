@@ -13,9 +13,13 @@ router.get("/list/all", Selected.GetJoiningList);
 
 router.put("/SendMail/:id", Selected.SendMailJoiningList);  
 
+//    re-SendMail To joining list Candidate
+
+router.put("/Re-SendMail/:id", Selected.Re_SendMailJoiningList);  
+
 //  get single joining get to sent client side
 
-router.get("/employee-details/:id",auth.authenticateUser, Selected.SingleJoiningList);
+router.get("/employee-details/:id", Selected.SingleJoiningList);
 
 // update_Client_Joining_Form
 
