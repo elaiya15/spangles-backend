@@ -39,7 +39,7 @@ app.use("/admin/hiring/applicant", applied);
 app.use("/admin/hiring/shortlisted", selected);
 app.use("/admin/hiring/joining-form",upload.any(), joiningForm);
 app.use("/admin/hiring/EmployeeProfile", EmployeeProfile);
-// app.use("/get", get);
+
 
 // Connect to MongoDB
 app.listen(PORT, () => {
