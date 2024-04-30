@@ -130,7 +130,7 @@ exports.UpdateShortList = async (req, res, next) => {
       Selected.EmployeeCode = EmployeeCode;
 
       // Create a new instance of SelectedCandidate and save it
-      const newSelectedCandidate =  new SelectedCandidateModel(Selected);
+      const newSelectedCandidate = new SelectedCandidateModel(Selected);
       await newSelectedCandidate.save();
       return res.status(201).json({ message: "Applicant Selected" });
     }
@@ -198,7 +198,7 @@ exports.SendMailJoiningList = async (req, res, next) => {
 // Re-SendMailJoiningList
 exports.Re_SendMailJoiningList = async (req, res, next) => {
   const { id } = req.params;
-
+  const { Description } = req.body;
   try {
     const user = await SelectedCandidateModel.findById(id);
     // / Assuming Applicant_id is a valid ID for ApplicationList
@@ -215,7 +215,7 @@ exports.Re_SendMailJoiningList = async (req, res, next) => {
     );
     if (updatedApplicant) {
       const subject = "Profile details";
-      const text = `This Link Valid For 2 MINUTES https://front-end-pass.vercel.app/Profile-details/${id}?token=${updatedApplicant.VerifyToken}`;
+      const text = `${Description} This Link Valid For 2 MINUTES http://localhost:5173/office-management/admin/hiring/joining-form/${id}/add/details?token=${updatedApplicant.VerifyToken}`;
 
       // Sent Mail
       const Mail = await SendEmail(res, Applicant.Email, subject, text);
@@ -237,42 +237,42 @@ exports.SingleJoiningList = async (req, res, next) => {
     // const {VerifyToken}= await SelectedCandidateModel.findById(id);
     const SingleList = await SelectedCandidateModel.findById(id);
 
-    
     if (SingleList.VerifyToken === token) {
-      if (SingleList.Status==="Waiting" ) {
+      if (SingleList.Status === "Waiting") {
         // Check if SingleList exists and has the Applicant_id property
-    if (!SingleList || !SingleList.Applicant_id) {
-      return res.status(404).json({
-        message: "Selected candidate not found or missing Applicant_id",
-      });
-    }
+        if (!SingleList || !SingleList.Applicant_id) {
+          return res.status(404).json({
+            message: "Selected candidate not found or missing Applicant_id",
+          });
+        }
 
-    // Assuming Applicant_id is a valid ID for ApplicationList
-    const Applicant = await ApplicationList.findById(SingleList.Applicant_id);
-    const SelectedApplicant = { ...Applicant.toObject() };
+        // Assuming Applicant_id is a valid ID for ApplicationList
+        const Applicant = await ApplicationList.findById(
+          SingleList.Applicant_id
+        );
+        const SelectedApplicant = { ...Applicant.toObject() };
 
-    if (!Applicant) {
-      return res
-        .status(404)
-        .json({ message: "Associated applicant not found" });
-    }
-    // Assuming Job_id is a valid ID for JobList
-    const addJobs = await AddJob.findById(Applicant.Job_id);
+        if (!Applicant) {
+          return res
+            .status(404)
+            .json({ message: "Associated applicant not found" });
+        }
+        // Assuming Job_id is a valid ID for JobList
+        const addJobs = await AddJob.findById(Applicant.Job_id);
 
-    if (!addJobs) {
-      return res.status(404).json({ message: "Associated Job not found" });
-    }
+        if (!addJobs) {
+          return res.status(404).json({ message: "Associated Job not found" });
+        }
 
-    SelectedApplicant.Designation = addJobs.Designation;
+        SelectedApplicant.Designation = addJobs.Designation;
 
-    return res
-      .status(200)
-      .json({ employee_details: SingleList, ApplicantList: SelectedApplicant });
+        return res.status(200).json({
+          employee_details: SingleList,
+          ApplicantList: SelectedApplicant,
+        });
       } else {
         return res.status(403).json({ message: "Form Already Submitted " });
       }
-
-
     } else {
       return res.status(401).json({ message: "Unauthorized Token" });
     }
@@ -284,8 +284,8 @@ exports.SingleJoiningList = async (req, res, next) => {
 exports.update_Client_Joining_Form = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const  data  = JSON.parse(req.body.data);
- 
+    const data = JSON.parse(req.body.data);
+
     const awsImgUpload = await uploadFile(data.ProfileImage, id);
     data.ProfileImage = awsImgUpload;
 
@@ -305,7 +305,7 @@ exports.update_Client_Joining_Form = async (req, res, next) => {
 
     // Call uploadAllPdfFiles function
     const PdfFiles = await uploadAllPdfFiles(data.EducationQualification, id);
-  
+
     data.EducationQualification = PdfFiles;
     data.Status = "In Progress";
 
@@ -326,9 +326,11 @@ exports.update_Client_Joining_Form = async (req, res, next) => {
 exports.ApproveJoining_Form = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const updatedClient = await SelectedCandidateModel.findById(id)
-     const Applicant = await ApplicationList.findById(updatedClient.Applicant_id);
-  
+    const updatedClient = await SelectedCandidateModel.findById(id);
+    const Applicant = await ApplicationList.findById(
+      updatedClient.Applicant_id
+    );
+
     if (!Applicant) {
       return res.status(404).json({ message: "Applicant not found" });
     }
@@ -342,29 +344,35 @@ exports.ApproveJoining_Form = async (req, res, next) => {
     const exitingProfile = { ...Applicant.toObject() };
     newEmployeeProfile.Designation = addJobs.Designation;
 
-  //  console.log("exitingProfile:",exitingProfile.AlternativeMobileNumber);
+    //  console.log("exitingProfile:",exitingProfile.AlternativeMobileNumber);
     delete newEmployeeProfile._id;
     delete newEmployeeProfile.Applicant_id;
     delete newEmployeeProfile.VerifyToken;
     delete newEmployeeProfile.Status;
 
-    newEmployeeProfile.Name=exitingProfile.Name,
-    newEmployeeProfile.Resume=exitingProfile.Resume,
-    newEmployeeProfile.Email=exitingProfile.Email,
-    newEmployeeProfile.AlternativeMobileNumber=exitingProfile.AlternativeMobileNumber,
-    newEmployeeProfile.MobileNumber=exitingProfile.MobileNumber
+    (newEmployeeProfile.Name = exitingProfile.Name),
+      (newEmployeeProfile.Resume = exitingProfile.Resume),
+      (newEmployeeProfile.Email = exitingProfile.Email),
+      (newEmployeeProfile.AlternativeMobileNumber =
+        exitingProfile.AlternativeMobileNumber),
+      (newEmployeeProfile.MobileNumber = exitingProfile.MobileNumber);
 
-    const StatusUpdated= await SelectedCandidateModel.findByIdAndUpdate(
-      id,
-      { $unset: { VerifyToken: 1 } }, // Use $unset to remove the 'VerifyToken' field
-      { Status: "Approved" },
+    const StatusUpdated = await SelectedCandidateModel.findByIdAndUpdate(
+      { _id: id },
+      { $unset: { VerifyToken: 1 }, $set: { Status: "Approved" } },
       { new: true }
     );
-   if (StatusUpdated) {
-    //  Create a new profile
-    const newProfile = new Profiles(newEmployeeProfile);
-    const savedProfile = await newProfile.save();
-   }
+    console.log(StatusUpdated);
+    // const StatusApproved= await SelectedCandidateModel.findByIdAndUpdate(
+    //   id,
+    //   { Status: "Approved" },
+    //   { new: true }
+    // );
+    if (StatusUpdated) {
+      //  Create a new profile
+      const newProfile = new Profiles(newEmployeeProfile);
+      const savedProfile = await newProfile.save();
+    }
     return res.status(200).json({ message: "Employee Approved successfully " });
   } catch (error) {
     // Changed from 'err' to 'error'
