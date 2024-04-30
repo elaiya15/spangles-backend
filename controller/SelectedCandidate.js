@@ -181,7 +181,7 @@ exports.SendMailJoiningList = async (req, res, next) => {
     );
     if (updatedApplicant) {
       const subject = "Profile details";
-      const text = `This Link Valid For 2 MINUTES https://front-end-pass.vercel.app/Profile-details/${id}?token=${updatedApplicant.VerifyToken}`;
+      const text = `This Link Valid For 2 MINUTES http://localhost:5173/office-management/admin/hiring/joining-form/${id}/add/details?token=${updatedApplicant.VerifyToken}`;
 
       // Sent Mail
       const Mail = await SendEmail(res, Applicant.Email, subject, text);
@@ -313,7 +313,7 @@ exports.update_Client_Joining_Form = async (req, res, next) => {
       data,
       { new: true }
     );
-    console.log(updatedClient);
+    // console.log(updatedClient);
 
     return res.status(201).json({ message: updatedClient });
   } catch (error) {

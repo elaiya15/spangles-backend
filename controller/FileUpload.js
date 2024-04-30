@@ -11,7 +11,6 @@ const s3 = new S3Client({
 });
 
 async function uploadFile(base64, filename) {
-  console.log("fileName:",filename);
   const base64Data = new Buffer.from(
     base64.replace(/^data:image\/\w+;base64,/, ""),
     "base64"
