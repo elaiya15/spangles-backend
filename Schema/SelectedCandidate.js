@@ -10,7 +10,7 @@ const SelectedCandidateSchema = new Schema({
   Gender: { type: String, enum: ['Male', 'Female', 'Other'], trim: true },
   MaritalStatus: { type: String, enum: ['Single', 'Married', 'Divorced', 'Widowed'], trim: true },
   DateofBirth: { type: String, trim: true },
-  EducationQualification: {type :Array},
+  EducationQualification:[],
   BloodGroup: { type: String, trim: true },
   AadhaarNumber: { type: String },
   AddressPresent: {
@@ -40,8 +40,8 @@ const SelectedCandidateSchema = new Schema({
 },
   Status: {
     type: String,
-    enum: ['In Progress', 'Approved', 'SendMail', 'Waiting'],
-    default: 'SendMail'
+    enum: ['In Progress', 'Approved', 'Waiting'],
+    default: null
   }
 });
 

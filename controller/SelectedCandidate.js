@@ -117,7 +117,7 @@ exports.UpdateShortList = async (req, res, next) => {
     );
 
     // Check if the status is being updated to "Selected"
-    if (data.Result === "Selected") {
+    if (updatedApplicant.Result === "Selected") {
       // Generate EmployeeCode
       const EmployeeCode = await generateEmployeeCode();
       // Create a new SelectedCandidate applicant based on the updated data
@@ -126,10 +126,11 @@ exports.UpdateShortList = async (req, res, next) => {
       delete Selected.Result; // Remove the status field
       delete Selected.InterviewStatus; // Remove the InterviewStatus field
       delete Selected.InterviewMode; // Remove the InterviewMode field
+      delete Selected.InterviewRounds; // Remove the InterviewMode field
       Selected.EmployeeCode = EmployeeCode;
 
       // Create a new instance of SelectedCandidate and save it
-      const newSelectedCandidate = new SelectedCandidateModel(Selected);
+      const newSelectedCandidate =  new SelectedCandidateModel(Selected);
       await newSelectedCandidate.save();
       return res.status(201).json({ SelectedCandidate: newSelectedCandidate });
     }
