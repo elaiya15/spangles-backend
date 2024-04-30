@@ -8,10 +8,8 @@ const SelectedCandidateModel = require("../Schema/SelectedCandidate.js");
 const { User, Profiles } = require("../Schema/RegesterSchema");
 const generateEmployeeCode = require("../Utils/EmployeeCodeGenerater.js");
 const SendEmail = require("../Utils/sendEmail");
-const {uploadFile,uploadPdfFile } = require("../controller/FileUpload");
+const { uploadFile, uploadPdfFile } = require("../controller/FileUpload");
 const jwt = require("jsonwebtoken"); // For generating JWT tokens
-
-
 
 // Get All Shortlisted ApplicationList
 exports.GetApplicationList = async (req, res, next) => {
@@ -170,8 +168,8 @@ exports.SendMailJoiningList = async (req, res, next) => {
   try {
     const user = await SelectedCandidateModel.findById(id);
     // / Assuming Applicant_id is a valid ID for ApplicationList
-const Applicant = await ApplicationList.findById(user.Applicant_id);
-// console.log(Applicant);
+    const Applicant = await ApplicationList.findById(user.Applicant_id);
+    // console.log(Applicant);
     // Generate a Verify JWT token
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
       expiresIn: "1d",
@@ -195,8 +193,6 @@ const Applicant = await ApplicationList.findById(user.Applicant_id);
     return res.status(400).json({ message: error.message });
   }
 };
-
-
 
 // Re-SendMailJoiningList
 exports.Re_SendMailJoiningList = async (req, res, next) => {
@@ -205,7 +201,7 @@ exports.Re_SendMailJoiningList = async (req, res, next) => {
   try {
     const user = await SelectedCandidateModel.findById(id);
     // / Assuming Applicant_id is a valid ID for ApplicationList
-const Applicant = await ApplicationList.findById(user.Applicant_id);
+    const Applicant = await ApplicationList.findById(user.Applicant_id);
 
     // Generate a Verify JWT token
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
@@ -230,12 +226,6 @@ const Applicant = await ApplicationList.findById(user.Applicant_id);
     return res.status(400).json({ message: error.message });
   }
 };
-
-
-
-
-
-
 
 // get SingleJoiningList to sent  client Joining form useEffect
 exports.SingleJoiningList = async (req, res, next) => {
@@ -246,45 +236,40 @@ exports.SingleJoiningList = async (req, res, next) => {
     // const {VerifyToken}= await SelectedCandidateModel.findById(id);
     const SingleList = await SelectedCandidateModel.findById(id);
 
-  // Check if SingleList exists and has the Applicant_id property
-  if (!SingleList || !SingleList.Applicant_id) {
-    return res
-      .status(404)
-      .json({
+    // Check if SingleList exists and has the Applicant_id property
+    if (!SingleList || !SingleList.Applicant_id) {
+      return res.status(404).json({
         message: "Selected candidate not found or missing Applicant_id",
       });
-  }
-  
-  // Assuming Applicant_id is a valid ID for ApplicationList
-  const Applicant = await ApplicationList.findById(SingleList.Applicant_id);
-  const SelectedApplicant = { ...Applicant.toObject() };
-  
-  if (!Applicant) {
-    return res
-      .status(404)
-      .json({ message: "Associated applicant not found" });
-  }
-  // Assuming Job_id is a valid ID for JobList
-  const addJobs = await AddJob.findById(Applicant.Job_id);
-  
-  if (!addJobs) {
-    return res.status(404).json({ message: "Associated Job not found" });
-  }
-  
-  SelectedApplicant.Designation = addJobs.Designation;
-  
-  return res.status(200).json({ employee_details: SingleList,ApplicantList:SelectedApplicant, });
+    }
 
+    // Assuming Applicant_id is a valid ID for ApplicationList
+    const Applicant = await ApplicationList.findById(SingleList.Applicant_id);
+    const SelectedApplicant = { ...Applicant.toObject() };
+
+    if (!Applicant) {
+      return res
+        .status(404)
+        .json({ message: "Associated applicant not found" });
+    }
+    // Assuming Job_id is a valid ID for JobList
+    const addJobs = await AddJob.findById(Applicant.Job_id);
+
+    if (!addJobs) {
+      return res.status(404).json({ message: "Associated Job not found" });
+    }
+
+    SelectedApplicant.Designation = addJobs.Designation;
+
+    return res
+      .status(200)
+      .json({ employee_details: SingleList, ApplicantList: SelectedApplicant });
 
     // if (SingleList.VerifyToken === token) {
-   
 
     // } else {
     //   return res.status(401).json({ message: "Unauthorized Token" });
     // }
-
- 
-
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
@@ -293,37 +278,39 @@ exports.SingleJoiningList = async (req, res, next) => {
 exports.update_Client_Joining_Form = async (req, res, next) => {
   try {
     const id = req.params.id;
-    req.body.Status = "In Progress";
-         const awsImgUpload = await uploadFile(req.body.ProfileImage,id )
-         req.body.ProfileImage = awsImgUpload
+    const  data  = JSON.parse(req.body.data);
+ 
+    const awsImgUpload = await uploadFile(data.ProfileImage, id);
+    data.ProfileImage = awsImgUpload;
 
-async function uploadAllPdfFiles(EducationQualification, id) {
-const data = [];
+    async function uploadAllPdfFiles(EducationQualification, id) {
+      const dataEducation = [];
+
+      for (let i = 0; i < EducationQualification.length; i++) {
+        const pdfData = EducationQualification[i].pdf;
+        const Qualification = EducationQualification[i].Qualification;
+        const pdf = await uploadPdfFile(pdfData, id, Qualification);
+
+        // Push an object with Qualification and pdf properties to data array
+        dataEducation.push({ Qualification, pdf });
+      }
+      return dataEducation;
+    }
+
+    // Call uploadAllPdfFiles function
+    const PdfFiles = await uploadAllPdfFiles(data.EducationQualification, id);
   
-  for (let i = 0; i < EducationQualification.length; i++) {
-    const pdfData = EducationQualification[i].pdf;
-    const Qualification = EducationQualification[i].Qualification;
-    const pdf = await uploadPdfFile(pdfData, id, Qualification);
-    
-    // Push an object with Qualification and pdf properties to data array
-    data.push({ Qualification, pdf });
-  }
-  return data
-}
+    data.EducationQualification = PdfFiles;
+    data.Status = "In Progress";
 
-// Call uploadAllPdfFiles function
-const PdfFiles = await uploadAllPdfFiles(req.body.EducationQualification, id);
-    console.log("All PDFs uploaded successfully");
-    req.body.EducationQualification = PdfFiles;
-    console.log(req.body);
     const updatedClient = await SelectedCandidateModel.findByIdAndUpdate(
       id,
-      req.body,
+      data,
       { new: true }
     );
     console.log(updatedClient);
 
-    return res.status(200).json({ message: updatedClient });
+    return res.status(201).json({ message: updatedClient });
   } catch (error) {
     // Changed from 'err' to 'error'
     return res.status(400).json({ message: error.message }); // Changed from 'err.message' to 'error.message'

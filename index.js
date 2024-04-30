@@ -16,7 +16,10 @@ const app = express();
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 const PORT = process.env.PORT || 5000;
-
+const multer = require("multer");
+const upload = multer({
+  limits: { fieldSize: 25 * 1024 * 1024 },
+});
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => console.log("DataBase Connected"))
@@ -34,7 +37,7 @@ app.use("/admin/hiring/template",Templeta);
 app.use("/admin/hiring/jobPost",AddJob );
 app.use("/admin/hiring/applicant", applied);
 app.use("/admin/hiring/shortlisted", selected);
-app.use("/admin/hiring/joining-form", joiningForm);
+app.use("/admin/hiring/joining-form",upload.any(), joiningForm);
 app.use("/admin/hiring/EmployeeProfile", EmployeeProfile);
 // app.use("/get", get);
 
