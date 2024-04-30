@@ -132,11 +132,11 @@ exports.UpdateShortList = async (req, res, next) => {
       // Create a new instance of SelectedCandidate and save it
       const newSelectedCandidate =  new SelectedCandidateModel(Selected);
       await newSelectedCandidate.save();
-      return res.status(201).json({ SelectedCandidate: newSelectedCandidate });
+      return res.status(201).json({ message: "Applicant Selected" });
     }
 
     // If status is not "Selected", return the updated applicant
-    return res.status(200).json({ update: updatedApplicant });
+    return res.status(201).json({ message: "Status Updated Successfully" });
   } catch (err) {
     return res.status(400).json({ message: err.message });
   }
