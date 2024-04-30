@@ -8,7 +8,7 @@ const SelectedCandidateModel = require("../Schema/SelectedCandidate.js");
 const { User, Profiles } = require("../Schema/RegesterSchema");
 const generateEmployeeCode = require("../Utils/EmployeeCodeGenerater.js");
 const SendEmail = require("../Utils/sendEmail");
-const {uploadFile,uploadPdfFile } = require("../Utils/FileUpload");
+const {uploadFile,uploadPdfFile } = require("../controller/FileUpload");
 const jwt = require("jsonwebtoken"); // For generating JWT tokens
 
 
