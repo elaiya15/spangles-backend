@@ -12,7 +12,7 @@ const profileSchema = new Schema({
   Designation: { type: String, trim: true },
   JoiningDate: { type: Date, trim: true },
   Gender: { type: String, enum: ['Male', 'Female', 'Other'], trim: true },
-  MaritalStatus: { type: String, enum: ['Single', 'Married', 'Divorced', 'Widowed'], trim: true },
+  MaritalStatus: { type: String, enum: ['Single', 'Married','UnMarried', 'Divorced', 'Widowed'], trim: true },
   DateofBirth: { type: String, trim: true },
   LastWorkingDate: { type: Date, trim: true },
   ReportingManager: { type: String, trim: true },
@@ -22,14 +22,11 @@ const profileSchema = new Schema({
     EndTime: { type: String, trim: true }
   },
   WeekOff: { type: String, trim: true },
-  EducationQualification: [{
-    Qualification: { type: String, trim: true },
-    pdf: { type: String }
-  }],
-  PhoneNumber: { type: String, trim: true },
-  AlternativePhoneNumber: { type: String, trim: true },
+  EducationQualification: [],
+  MobileNumber: { type: String, trim: true },
+  AlternativeMobileNumber: { type: String, trim: true },
   EmailOffice: { type: String, unique: true, trim: true },
-  EmailPersonal: { type: String, unique: true, trim: true },
+  Email: { type: String, unique: true, trim: true },
   BloodGroup: { type: String, trim: true },
   AadhaarNumber: { type: String },
   AddressPresent: {
@@ -53,8 +50,9 @@ const profileSchema = new Schema({
   AccountNumber: { type: String },
   IFSCCode: { type: String, trim: true },
   BankName: { type: String, trim: true },
-  PANNumber: { type: String, trim: true }
-  
+  PANNumber: { type: String, trim: true },
+  Status:{type: String, trim: true},
+  Reason_for_Inactive:{type: String, trim: true}
 
 });
 

@@ -326,18 +326,45 @@ exports.update_Client_Joining_Form = async (req, res, next) => {
 exports.ApproveJoining_Form = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const updatedClient = await SelectedCandidateModel.findByIdAndUpdate(
+    const updatedClient = await SelectedCandidateModel.findById(id)
+     const Applicant = await ApplicationList.findById(updatedClient.Applicant_id);
+  
+    if (!Applicant) {
+      return res.status(404).json({ message: "Applicant not found" });
+    }
+    const addJobs = await AddJob.findById(Applicant.Job_id);
+
+    if (!addJobs) {
+      return res.status(404).json({ message: "Associated Job not found" });
+    }
+
+    const newEmployeeProfile = { ...updatedClient.toObject() };
+    const exitingProfile = { ...Applicant.toObject() };
+    newEmployeeProfile.Designation = addJobs.Designation;
+
+  //  console.log("exitingProfile:",exitingProfile.AlternativeMobileNumber);
+    delete newEmployeeProfile._id;
+    delete newEmployeeProfile.Applicant_id;
+    delete newEmployeeProfile.VerifyToken;
+    delete newEmployeeProfile.Status;
+
+    newEmployeeProfile.Name=exitingProfile.Name,
+    newEmployeeProfile.Resume=exitingProfile.Resume,
+    newEmployeeProfile.Email=exitingProfile.Email,
+    newEmployeeProfile.AlternativeMobileNumber=exitingProfile.AlternativeMobileNumber,
+    newEmployeeProfile.MobileNumber=exitingProfile.MobileNumber
+
+    const StatusUpdated= await SelectedCandidateModel.findByIdAndUpdate(
       id,
+      { $unset: { VerifyToken: 1 } }, // Use $unset to remove the 'VerifyToken' field
       { Status: "Approved" },
       { new: true }
     );
-    // console.log(updatedClient);
-    const newEmployeeProfile = { ...updatedClient.toObject() };
-
-    // Create a new profile
+   if (StatusUpdated) {
+    //  Create a new profile
     const newProfile = new Profiles(newEmployeeProfile);
     const savedProfile = await newProfile.save();
-
+   }
     return res.status(200).json({ message: "Employee Approved successfully " });
   } catch (error) {
     // Changed from 'err' to 'error'
