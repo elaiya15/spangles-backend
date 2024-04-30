@@ -236,7 +236,10 @@ exports.SingleJoiningList = async (req, res, next) => {
     // const {VerifyToken}= await SelectedCandidateModel.findById(id);
     const SingleList = await SelectedCandidateModel.findById(id);
 
-    // Check if SingleList exists and has the Applicant_id property
+    
+    if (SingleList.VerifyToken === token) {
+      if (SingleList.Status==="Waiting" ) {
+        // Check if SingleList exists and has the Applicant_id property
     if (!SingleList || !SingleList.Applicant_id) {
       return res.status(404).json({
         message: "Selected candidate not found or missing Applicant_id",
@@ -264,12 +267,14 @@ exports.SingleJoiningList = async (req, res, next) => {
     return res
       .status(200)
       .json({ employee_details: SingleList, ApplicantList: SelectedApplicant });
+      } else {
+        return res.status(403).json({ message: "Form Already Submitted " });
+      }
 
-    // if (SingleList.VerifyToken === token) {
 
-    // } else {
-    //   return res.status(401).json({ message: "Unauthorized Token" });
-    // }
+    } else {
+      return res.status(401).json({ message: "Unauthorized Token" });
+    }
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
