@@ -23,7 +23,7 @@ router.get("/employee-details/:id", Selected.SingleJoiningList);
 
 // update_Client_Joining_Form
 
-router.put("/employee-details/update/:id", Selected.update_Client_Joining_Form);
+router.post("/employee-details/update/:id", Selected.update_Client_Joining_Form);
 
 router.put("/status/update/:id", Selected.ApproveJoining_Form);
 

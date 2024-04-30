@@ -12,10 +12,7 @@ const SelectedCandidateSchema = new Schema({
   Gender: { type: String, enum: ['Male', 'Female', 'Other'], trim: true },
   MaritalStatus: { type: String, enum: ['Single', 'Married', 'Divorced', 'Widowed'], trim: true },
   DateofBirth: { type: String, trim: true },
-  EducationQualification: [{
-    Qualification: { type: String, trim: true },
-    pdf: { type: String }
-  }],
+  EducationQualification: {type :Array},
   PhoneNumber: { type: String, trim: true },
   AlternativePhoneNumber: { type: String, trim: true },
   EmailOffice: { type: String, unique: true, trim: true },

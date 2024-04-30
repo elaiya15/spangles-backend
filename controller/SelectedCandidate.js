@@ -8,7 +8,7 @@ const SelectedCandidateModel = require("../Schema/SelectedCandidate.js");
 const { User, Profiles } = require("../Schema/RegesterSchema");
 const generateEmployeeCode = require("../Utils/EmployeeCodeGenerater.js");
 const SendEmail = require("../Utils/sendEmail");
-const uploadFile = require("../Utils/fileupload");
+const {uploadFile,uploadPdfFile} = require("../Utils/fileUpload");
 const jwt = require("jsonwebtoken"); // For generating JWT tokens
 
 
@@ -293,63 +293,35 @@ exports.SingleJoiningList = async (req, res, next) => {
 exports.update_Client_Joining_Form = async (req, res, next) => {
   try {
     const id = req.params.id;
-
     req.body.Status = "In Progress";
-    const Data = {
-      Designation: "Software Engineer",
-      Name: "John Doe",
-      EmployeeCode: "E12345",
-      ProfileImage: "https://example.com/profile-image.jpg",
-      JoiningDate: "2024-04-27",
-      Gender: "Male",
-      MaritalStatus: "Single",
-      DateofBirth: "1990-01-01",
-      EducationQualification: [
-        {
-          Qualification: "Bachelor of Science",
-          pdf: "https://example.com/degree.pdf",
-        },
-        {
-          Qualification: "Master of Science",
-          pdf: "https://example.com/masters_degree.pdf",
-        },
-      ],
-      PhoneNumber: "+1234567890",
-      AlternativePhoneNumber: "+9876543210",
-      EmailOffice: "john.doe@example.com",
-      EmailPersonal: "john.doe.personal@example.com",
-      BloodGroup: "O+",
-      AadhaarNumber: "1234 5678 9012",
-      AddressPresent: {
-        AddressLine1: "123 Main St",
-        AddressLine2: "Apt 456",
-        City: "New York",
-        District: "Manhattan",
-        State: "NY",
-        Country: "USA",
-        ZipCode: "10001",
-      },
-      AddressPermanent: {
-        AddressLine1: "456 Elm St",
-        AddressLine2: "Unit 789",
-        City: "Los Angeles",
-        District: "LA",
-        State: "CA",
-        Country: "USA",
-        ZipCode: "90001",
-      },
-      AccountNumber: "1234567890123456",
-      IFSCCode: "ABCD0123456",
-      BankName: "Example Bank",
-      PANNumber: "ABCDE1234F",
-    };
+         const awsImgUpload = await uploadFile(req.body.ProfileImage,id )
+         req.body.ProfileImage = awsImgUpload
 
+async function uploadAllPdfFiles(EducationQualification, id) {
+const data = [];
+  
+  for (let i = 0; i < EducationQualification.length; i++) {
+    const pdfData = EducationQualification[i].pdf;
+    const Qualification = EducationQualification[i].Qualification;
+    const pdf = await uploadPdfFile(pdfData, id, Qualification);
+    
+    // Push an object with Qualification and pdf properties to data array
+    data.push({ Qualification, pdf });
+  }
+  return data
+}
+
+// Call uploadAllPdfFiles function
+const PdfFiles = await uploadAllPdfFiles(req.body.EducationQualification, id);
+    console.log("All PDFs uploaded successfully");
+    req.body.EducationQualification = PdfFiles;
     console.log(req.body);
     const updatedClient = await SelectedCandidateModel.findByIdAndUpdate(
       id,
       req.body,
       { new: true }
     );
+    console.log(updatedClient);
 
     return res.status(200).json({ message: updatedClient });
   } catch (error) {
@@ -357,7 +329,7 @@ exports.update_Client_Joining_Form = async (req, res, next) => {
     return res.status(400).json({ message: error.message }); // Changed from 'err.message' to 'error.message'
   }
 };
-
+// update_Client_Joining_Form()
 exports.ApproveJoining_Form = async (req, res, next) => {
   try {
     const id = req.params.id;
