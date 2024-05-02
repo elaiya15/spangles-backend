@@ -10,11 +10,11 @@ const profileSchema = new Schema({
   ProfileImage: { type: String, trim: true },
   EmployeeCode: { type: String, trim: true },
   Designation: { type: String, trim: true },
-  JoiningDate: { type: Date, trim: true },
+  JoiningDate: { type: String, trim: true },
   Gender: { type: String, enum: ['Male', 'Female', 'Other'], trim: true },
-  MaritalStatus: { type: String, enum: ['Single', 'Married','UnMarried', 'Divorced', 'Widowed'], trim: true },
+  MaritalStatus: { type: String, enum: [ 'Married','UnMarried', 'Divorced', 'Widowed'], trim: true },
   DateofBirth: { type: String, trim: true },
-  LastWorkingDate: { type: Date, trim: true },
+  LastWorkingDate: { type: String, trim: true },
   ReportingManager: { type: String, trim: true },
   Salary: { type: String, trim: true },
   WorkTime: {
@@ -22,11 +22,13 @@ const profileSchema = new Schema({
     EndTime: { type: String, trim: true }
   },
   WeekOff: { type: String, trim: true },
-  EducationQualification: [],
+  EducationQualification: Array,
   MobileNumber: { type: String, trim: true },
   AlternativeMobileNumber: { type: String, trim: true },
   EmailOffice: { type: String, unique: true, trim: true },
-  Email: { type: String, unique: true, trim: true },
+  EmailPersonal: { type: String, unique: true, trim: true },
+  EmailAlternative:{ type: String, trim: true },
+
   BloodGroup: { type: String, trim: true },
   AadhaarNumber: { type: String },
   AddressPresent: {
