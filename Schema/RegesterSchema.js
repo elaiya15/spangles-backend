@@ -12,7 +12,11 @@ const profileSchema = new Schema({
   Designation: { type: String, trim: true },
   JoiningDate: { type: String, trim: true },
   Gender: { type: String, enum: ['Male', 'Female', 'Other'], trim: true },
-  MaritalStatus: { type: String, enum: [ 'Married','UnMarried', 'Divorced', 'Widowed'], trim: true },
+  MaritalStatus: {
+    type: String,
+    enum: ["Married", "Unmarried", "Divorced", "Widowed", "Others"],
+    trim: true,
+  },
   DateofBirth: { type: String, trim: true },
   LastWorkingDate: { type: String, trim: true },
   ReportingManager: { type: String, trim: true },
@@ -31,7 +35,19 @@ const profileSchema = new Schema({
   EmailPersonal: { type: String, unique: true, trim: true },
   EmailAlternative:{ type: String, trim: true },
 
-  BloodGroup: { type: String, trim: true },
+  BloodGroup: {
+    type: String,
+    enum: [
+      "A Positive",
+      "A Negative",
+      "AB Positive",
+      "AB Negative",
+      "B Positive",
+      "B Negative",
+      "O Positive",
+      "O Negative",
+    ],
+  },
   AadhaarNumber: { type: String },
   AddressPresent: {
     AddressLine1: { type: String, minlength: 0, maxlength: 500 },

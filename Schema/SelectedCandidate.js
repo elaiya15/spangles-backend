@@ -29,7 +29,7 @@ const SelectedCandidateSchema = new Schema({
       "O Positive",
       "O Negative",
     ],
-    trim: true,
+   
   },
   EmailAlternative: { type: String, unique: true, trim: true },
   AadhaarNumber: { type: String },
