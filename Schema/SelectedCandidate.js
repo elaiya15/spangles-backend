@@ -10,14 +10,27 @@ const SelectedCandidateSchema = new Schema({
   Gender: { type: String, enum: ["Male", "Female", "Other"], trim: true },
   MaritalStatus: {
     type: String,
-    enum: [ "Married",'UnMarried', "Divorced", "Widowed"],
+    enum: ["Married", "Unmarried", "Divorced", "Widowed", "Others"],
     trim: true,
   },
   DateofBirth: { type: String, trim: true },
   EducationQualification: {
-    type: [Object]
+    type: [Object],
   },
-  BloodGroup: { type: String, trim: true },
+  BloodGroup: {
+    type: String,
+    enum: [
+      "A Positive",
+      "A Negative",
+      "AB Positive",
+      "AB Negative",
+      "B Positive",
+      "B Negative",
+      "O Positive",
+      "O Negative",
+    ],
+    trim: true,
+  },
   EmailAlternative: { type: String, unique: true, trim: true },
   AadhaarNumber: { type: String },
   AddressPresent: {
