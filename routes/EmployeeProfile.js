@@ -5,6 +5,6 @@ const router = express.Router();
 
 
 
-router.get("/list", Profile.EmployeeProfile);
+router.get("/list/all", Profile.EmployeeProfile);
 
 module.exports = router;

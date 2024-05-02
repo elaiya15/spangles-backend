@@ -10,7 +10,7 @@ exports.EmployeeProfile = async (req, res, next) => {
 
 // console.log(Profile);
 
-    return res.status(200).json({ message: Profile });
+    return res.status(200).json({ message:"Data fetch successfully", employeeList:Profiles});
   } catch (error) { // Changed from 'err' to 'error'
     return res.status(400).json({ message: error.message }); // Changed from 'err.message' to 'error.message'
   }
