@@ -22,7 +22,9 @@ const profileSchema = new Schema({
     EndTime: { type: String, trim: true }
   },
   WeekOff: { type: String, trim: true },
-  EducationQualification: Array,
+  EducationQualification: {
+    type: [Object]
+  },
   MobileNumber: { type: String, trim: true },
   AlternativeMobileNumber: { type: String, trim: true },
   EmailOffice: { type: String, unique: true, trim: true },

@@ -285,21 +285,25 @@ exports.update_Client_Joining_Form = async (req, res, next) => {
   try {
     const id = req.params.id;
     const data = JSON.parse(req.body.data);
-
-    const awsImgUpload = await uploadFile(data.ProfileImage, id);
-    data.ProfileImage = awsImgUpload;
+    if (!data.ProfileImage.includes("https://")) {
+      const awsImgUpload = await uploadFile(data.ProfileImage, id);
+      data.ProfileImage = awsImgUpload;
+    }
 
     async function uploadAllPdfFiles(EducationQualification, id) {
       const dataEducation = [];
-
       for (let i = 0; i < EducationQualification.length; i++) {
         const pdfData = EducationQualification[i].pdf;
         const Qualification = EducationQualification[i].Qualification;
-        const pdf = await uploadPdfFile(pdfData, id, Qualification);
-
-        // Push an object with Qualification and pdf properties to data array
-        dataEducation.push({ Qualification, pdf });
+        if (!pdfData.includes("https://")) {
+          const pdf = await uploadPdfFile(pdfData, id, Qualification);
+          // Push an object with Qualification and pdf properties to data array
+          dataEducation.push({ Qualification, pdf });
+        } else {
+          dataEducation.push({ Qualification, pdfData });
+        }
       }
+
       return dataEducation;
     }
 
@@ -357,23 +361,24 @@ exports.ApproveJoining_Form = async (req, res, next) => {
         exitingProfile.AlternativeMobileNumber),
       (newEmployeeProfile.MobileNumber = exitingProfile.MobileNumber);
 
-    const StatusUpdated = await SelectedCandidateModel.findByIdAndUpdate(
-      { _id: id },
-      { $unset: { VerifyToken: 1 }, $set: { Status: "Approved" } },
-      { new: true }
-    );
-    console.log(StatusUpdated);
-    // const StatusApproved= await SelectedCandidateModel.findByIdAndUpdate(
-    //   id,
-    //   { Status: "Approved" },
+    // const StatusUpdated = await SelectedCandidateModel.findByIdAndUpdate(
+    //   { _id: id },
+    //   { $unset: { VerifyToken: 1 }, $set: { Status: "Approved" } },
     //   { new: true }
     // );
-    if (StatusUpdated) {
+    // console.log(StatusUpdated);
+    const StatusApproved= await SelectedCandidateModel.findByIdAndUpdate(
+      id,
+      { Status: "Approved" },
+      { new: true }
+    );
+    if (StatusApproved.Status==="Approved") {
       //  Create a new profile
       const newProfile = new Profiles(newEmployeeProfile);
       const savedProfile = await newProfile.save();
+      return res.status(200).json({ message: "Employee Approved successfully " });
     }
-    return res.status(200).json({ message: "Employee Approved successfully " });
+    return res.status(404).json({ message: "Employee Approved Failed" });
   } catch (error) {
     // Changed from 'err' to 'error'
     return res.status(400).json({ message: error.message }); // Changed from 'err.message' to 'error.message'

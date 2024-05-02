@@ -14,7 +14,9 @@ const SelectedCandidateSchema = new Schema({
     trim: true,
   },
   DateofBirth: { type: String, trim: true },
-  EducationQualification:{ type: Array, default: null},
+  EducationQualification: {
+    type: [Object]
+  },
   BloodGroup: { type: String, trim: true },
   EmailAlternative: { type: String, unique: true, trim: true },
   AadhaarNumber: { type: String },
