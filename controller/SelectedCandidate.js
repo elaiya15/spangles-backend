@@ -206,7 +206,7 @@ exports.Re_SendMailJoiningList = async (req, res, next) => {
 
     // Generate a Verify JWT token
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
-      expiresIn: "1d",
+      expiresIn: "2m",
     });
     const updatedApplicant = await SelectedCandidateModel.findByIdAndUpdate(
       id,
