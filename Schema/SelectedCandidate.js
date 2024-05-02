@@ -7,7 +7,7 @@ const SelectedCandidateSchema = new Schema({
   EmployeeCode: { type: String, trim: true },
   ProfileImage: { type: String, trim: true },
   JoiningDate: { type: String, trim: true },
-  Gender: { type: String, enum: ["Male", "Female", "Other"], trim: true },
+  Gender: { type: String, enum: ["Male", "Female", "Others"], trim: true },
   MaritalStatus: {
     type: String,
     enum: ["Married", "Unmarried", "Divorced", "Widowed", "Others"],

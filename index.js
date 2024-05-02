@@ -38,7 +38,7 @@ app.use("/admin/hiring/jobPost",AddJob );
 app.use("/admin/hiring/applicant", applied);
 app.use("/admin/hiring/shortlisted", selected);
 app.use("/admin/hiring/joining-form",upload.any(), joiningForm);
-app.use("/admin/hiring/EmployeeProfile", EmployeeProfile);
+app.use("/admin/employee-profile", EmployeeProfile);
 
 
 // Connect to MongoDB

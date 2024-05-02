@@ -356,10 +356,9 @@ exports.ApproveJoining_Form = async (req, res, next) => {
 
     (newEmployeeProfile.Name = exitingProfile.Name),
       (newEmployeeProfile.Resume = exitingProfile.Resume),
-      (newEmployeeProfile.Email = exitingProfile.Email),
-      (newEmployeeProfile.AlternativeMobileNumber =
-        exitingProfile.AlternativeMobileNumber),
-      (newEmployeeProfile.MobileNumber = exitingProfile.MobileNumber);
+      (newEmployeeProfile.EmailPersonal = exitingProfile.Email),
+      (newEmployeeProfile.AlternativePhoneNumber =exitingProfile.AlternativeMobileNumber),
+      (newEmployeeProfile.PhoneNumber = exitingProfile.MobileNumber);
 
     // const StatusUpdated = await SelectedCandidateModel.findByIdAndUpdate(
     //   { _id: id },
